@@ -1,0 +1,16 @@
+<manifest>
+    <main-class>RedSpidersEggs</main-class>
+    <name>Red spiders egg spawner</name>
+    <tag-line>red spider egg spawn</tag-line><!--Max of 50 chars-->
+    <description>Spawns red spider eggs</description><!--Max of 110 chars-->
+    <version>1.0.0</version>
+    <compatibility>
+        <game>OSRS</game>
+        <game>RS3</game>
+        <!--Can be used if you absolutely need to disable DarkScape (highly discouraged)-->
+        <!--<disable-game>DARK</disable-game>-->
+    </compatibility>
+    <categories>
+        <category>SUMMONING</category>
+    </categories>
+</manifest>
