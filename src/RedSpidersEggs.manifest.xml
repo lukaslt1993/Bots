@@ -1,16 +1,31 @@
 <manifest>
     <main-class>RedSpidersEggs</main-class>
-    <name>Red spiders egg spawner</name>
-    <tag-line>red spider egg spawn</tag-line><!--Max of 50 chars-->
-    <description>Spawns red spider eggs</description><!--Max of 110 chars-->
+    <name>Red spiders' eggs spawner</name>
+    <tag-line>Which came first, the spider or the egg?</tag-line>
+    <description>Start near Well of Goodwill. Supports potions. Try to buy cheap, sell expensive.</description><!--Max of 110 chars-->
     <version>1.0.0</version>
     <compatibility>
         <game>OSRS</game>
         <game>RS3</game>
-        <!--Can be used if you absolutely need to disable DarkScape (highly discouraged)-->
-        <!--<disable-game>DARK</disable-game>-->
     </compatibility>
     <categories>
         <category>SUMMONING</category>
+        <category>MONEYMAKING</category>
     </categories>
+    <internal-id>Red spiders' eggs spawner</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Egg</tag>
+        <tag>Spider</tag>
+        <tag>Red</tag>
+        <tag>Spawn</tag>
+        <tag>Spawner</tag>
+        <tag>Moneymaking</tag>
+        <tag>Money</tag>
+        <tag>Cash</tag>
+        <tag>Summoning</tag>
+        <tag>Summon</tag>
+    </tags>
 </manifest>

@@ -6,13 +6,13 @@ import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.local.hud.interfaces.SpriteItem;
 import com.runemate.game.api.hybrid.location.Coordinate;
-import com.runemate.game.api.hybrid.location.navigation.Traversal;
-import com.runemate.game.api.hybrid.location.navigation.web.WebPath;
+import com.runemate.game.api.hybrid.location.navigation.basic.BresenhamPath;
 import com.runemate.game.api.hybrid.region.GameObjects;
 import com.runemate.game.api.hybrid.region.GroundItems;
 import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.rs3.local.hud.interfaces.Summoning;
 import com.runemate.game.api.rs3.region.Familiars;
+import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.LoopingScript;
 import java.util.regex.Pattern;
 
@@ -27,8 +27,10 @@ public class RedSpidersEggs extends LoopingScript {
     private String pouch = "Spirit spider pouch";
 
     private enum State {
-        bank, summon, spawn, pick, restore, walkToBank;
+        bank, summon, spawn, pick, restore, walkToBank, outOfStuff;
     }
+
+    private int counter = 0;
 
     @Override
     public void onStop() {
@@ -38,17 +40,14 @@ public class RedSpidersEggs extends LoopingScript {
     @Override
     public void onStart(String... args) {
         setLoopDelay(150, 600);
-        bankCoord = Players.getLocal().getPosition();
-        //System.out.println(Summoning.Familiar.SPIRIT_SPIDER.getName());
-        //System.out.println(Familiars.getLoaded().size());
+        bankCoord = GameObjects.newQuery().names("Well of Goodwill").results().nearest().getPosition();
     }
 
     @Override
     public void onLoop() {
-        //System.out.println(getCurrentState());
         switch (getCurrentState()) {
             case bank:
-                bank(false);
+                bank();
                 break;
             case summon:
                 summon();
@@ -63,15 +62,17 @@ public class RedSpidersEggs extends LoopingScript {
                 restore();
                 break;
             case walkToBank:
-                walkToBank();
+                walk(bankCoord);
+                break;
+            case outOfStuff:
+                stop();
                 break;
         }
     }
 
     private State getCurrentState() {
-        if (Inventory.isEmpty() || Inventory.isFull()) {
-            /*!*/
-            if (isVisible("Well of Goodwill")) {
+        if (!Inventory.containsAnyOf("Egg spawn scroll") || Inventory.isFull()) {
+            if (isVisible("Well of Goodwill") || Bank.isOpen()) {
                 return State.bank;
             } else {
                 return State.walkToBank;
@@ -102,49 +103,69 @@ public class RedSpidersEggs extends LoopingScript {
         }
     }
 
-    private void bank(boolean withdrawPouch) {
-        GameObject bank = GameObjects.newQuery().names("Well of Goodwill").results().nearest();
-        bank.interact("Open Bank", bank.getDefinition().getName());
-        //Bank.open();
-        Bank.depositAllExcept(potsAndScroll);
-        if (!Inventory.contains(Pattern.compile("Summoning potion \\([3-4]\\)"))) {
-            for (String s : pots) {
-                if (Bank.withdraw(s, 1)) {
-                    break;
+    private void bank() {
+        if (!Bank.isOpen()) {
+            GameObject bank = GameObjects.newQuery().names("Well of Goodwill").results().nearest();
+            do {
+
+            } while (!bank.interact("Open Bank", bank.getDefinition().getName()) && ++counter % 10 != 0);
+            Execution.delayUntil(() -> Bank.isOpen(), 500, 5000);
+        } else {
+            if (!Inventory.containsAnyOf("Egg spawn scroll")) {
+                if (!Bank.containsAnyOf("Egg spawn scroll")) {
+                    pause();
+                } else {
+                    do {
+
+                    } while (!Bank.withdraw("Egg spawn scroll", 9999999) && ++counter % 10 != 0);
                 }
             }
+            do {
+
+            } while (!Bank.depositAllExcept(potsAndScroll) && ++counter % 10 != 0);
+            if (!Inventory.containsAnyOf(Pattern.compile("Summoning potion \\([3-4]\\)"))) {
+                for (String s : pots) {
+                    if (Bank.containsAnyOf(s)) {
+                        do {
+
+                        } while (!Bank.withdraw(s, 1) && ++counter % 10 != 0);
+                        break;
+                    }
+                }
+            }
+            if (Familiars.getLoaded().size() == 0) {
+                if (Bank.containsAnyOf(pouch)) {
+                    do {
+
+                    } while (!Bank.withdraw(pouch, 1) && ++counter % 10 != 0);
+                } else {
+                    pause();
+                }
+            }
+            do {
+
+            } while (!Bank.close() && ++counter % 10 != 0);
         }
-        if (withdrawPouch) {
-            Bank.withdraw(pouch, 1);
-        }
-        Bank.close();
-        do {
-            
-        } while (Bank.isOpen());
-        //System.out.println("Bank closed");
     }
 
     private void summon() {
-        if (Inventory.contains("Spirit spider pouch")) {
-            Inventory.getItems("Spirit spider pouch").first().click();
-        } else {
-            if (isVisible("Well of Goodwill")) {
-                bank(true);  
-                /*do {
-                    
-                } while (!Inventory.contains("Spirit spider pouch"));*/
-            } else {
-                walkToBank();
-                bank(true);
-                /*do {
-                    
-                } while (!Inventory.contains("Spirit spider pouch"));*/
-            }
-            if (Inventory.contains("Spirit spider pouch")) {
-                Inventory.getItems("Spirit spider pouch").first().click();  
-            } 
-        }
+        if (Inventory.containsAnyOf("Spirit spider pouch")) {
+            do {
 
+            } while (!Inventory.getItems("Spirit spider pouch").first().click() && ++counter % 10 != 0);
+            do {
+                try {
+                    Thread.sleep(250);
+                } catch (Exception ex) {
+
+                }
+            } while (Familiars.getLoaded().size() == 0 && ++counter % 10 != 0);
+        } else if (isVisible("Well of Goodwill")) {
+            bank();
+        } else {
+            walk(bankCoord);
+            bank();
+        }
     }
 
     private void spawn() {
@@ -155,7 +176,17 @@ public class RedSpidersEggs extends LoopingScript {
         GroundItem eggs = GroundItems.newQuery().names("Red spiders' eggs").results().nearest();
         if (eggs != null) {
             if (eggs.isVisible() || Camera.turnTo(eggs)) {
-                eggs.interact("Take", eggs.getDefinition().getName());
+                int usedSlots = Inventory.getUsedSlots();
+                for (int i = 0; i < 10; i++) {
+                    if (eggs.interact("Take", eggs.getDefinition().getName())) {
+                        Execution.delayUntil(() -> Inventory.getUsedSlots() > usedSlots, 500, 5000);
+                        return true;
+                    }
+                }
+                Coordinate eggsCoordinates = eggs.getPosition();
+                if (eggsCoordinates != null) {
+                    walk(eggsCoordinates);
+                }
                 return true;
             } else {
                 return false;
@@ -174,19 +205,40 @@ public class RedSpidersEggs extends LoopingScript {
     }
 
     private void restore() {
-        /*!*/
-        /*SpriteItem pot = Inventory.getItems(pots).first();
-        for (int i = 0; i < 4; i++) {
+        SpriteItem pot = Inventory.getItems(pots).first();
+        if (pot != null) {
             pot.click();
-        }*/
-        Inventory.getItems(pots).first().click();
-    }
+        } else {
+            try {
+                Thread.sleep(500);
+            } catch (Exception ex) {
 
-    private void walkToBank() {
-        final WebPath path = Traversal.getDefaultWeb().getPathBuilder().buildTo(bankCoord);
-        if (path != null) {
-            path.step();
+            }
         }
     }
 
+    private void walk(Coordinate c) {
+        BresenhamPath path = buildPath(c);
+        if (path != null) {
+            path.step();
+        } else {
+            int x = Players.getLocal().getPosition().getX();
+            int y = Players.getLocal().getPosition().getY();
+            do {
+                x++;
+                path = buildPath(new Coordinate(x, y));
+            } while ((path == null || !path.step()) && ++counter % 10 != 0);
+            walk(new Coordinate(c.getX() + 1, c.getY()));
+        }
+    }
+
+    private BresenhamPath buildPath(Coordinate c) {
+        BresenhamPath path;
+        try {
+            path = BresenhamPath.buildTo(bankCoord);
+        } catch (Exception ex) {
+            return null;
+        }
+        return path;
+    }
 }
