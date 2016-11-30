@@ -15,10 +15,10 @@ import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.rs3.local.hud.interfaces.Summoning;
 import com.runemate.game.api.rs3.region.Familiars;
 import com.runemate.game.api.script.Execution;
-import com.runemate.game.api.script.framework.LoopingScript;
+import com.runemate.game.api.script.framework.LoopingBot;
 import java.util.regex.Pattern;
 
-public class RedSpidersEggs extends LoopingScript {
+public class RedSpidersEggs extends LoopingBot {
 
     private Coordinate bankCoord = new Coordinate(3163, 3454);
 
