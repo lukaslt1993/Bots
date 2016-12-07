@@ -18,7 +18,7 @@ import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.LoopingBot;
 import java.util.regex.Pattern;
 
-public class RedSpidersEggs extends LoopingBot {
+public class RedSpidersEggsAlternate extends LoopingBot {
 
     private Coordinate bankCoord = new Coordinate(3164, 3454);
 
@@ -32,9 +32,9 @@ public class RedSpidersEggs extends LoopingBot {
         BANK, SUMMON, SPAWN, PICK, RESTORE, WALKTOBANK;
     }
 
-    private int counter = 0;
+    private int loopCounter = 0;
     
-    private int pickedNoneTimes = 0;
+    private int pickedNoneCounter = 0;
 
     @Override
     public void onStop() {
@@ -43,7 +43,7 @@ public class RedSpidersEggs extends LoopingBot {
 
     @Override
     public void onStart(String... args) {
-        setLoopDelay(150, 600);
+        setLoopDelay(150, 500);
     }
 
     @Override
@@ -119,12 +119,8 @@ public class RedSpidersEggs extends LoopingBot {
     private void bank() {
         if (!Bank.isOpen()) {
             GameObject bank = GameObjects.newQuery().names("Well of Goodwill").results().nearest();
-
-            do {
-
-            } while (!bank.interact("Open Bank", bank.getDefinition().getName()) && ++counter % 10 != 0);
-
-            Execution.delayUntil(() -> Bank.isOpen(), 500, 5000);
+            Execution.delayWhile(() -> !bank.interact("Open Bank", bank.getDefinition().getName()), 20000);
+            Execution.delayUntil(() -> Bank.isOpen(), 10000);
             
             if (!Bank.isOpen()) {
                 walk(bankCoord);
@@ -142,24 +138,14 @@ public class RedSpidersEggs extends LoopingBot {
                     stop();
 
                 } else {
-
-                    do {
-
-                    } while (!Bank.withdraw("Egg spawn scroll", 9999999) && ++counter % 10 != 0);
-
+                    Execution.delayWhile(() -> !Bank.withdraw("Egg spawn scroll", 9999999), 25000);
                 }
             }
 
-            do {
-
-            } while (!Bank.depositAllExcept(potsAndScroll) && ++counter % 10 != 0);
+            Execution.delayWhile(() -> !Bank.depositAllExcept(potsAndScroll), 25000);
 
             if (Inventory.getEmptySlots() < 20) {
-
-                do {
-
-                } while (!Bank.depositAllExcept("Egg spawn scroll") && ++counter % 10 != 0);
-
+                Execution.delayWhile(() -> !Bank.depositAllExcept("Egg spawn scroll"), 25000);
             }
 
             if (!Inventory.containsAnyOf(Pattern.compile("Summoning potion \\([3-4]\\)"))) {
@@ -167,42 +153,31 @@ public class RedSpidersEggs extends LoopingBot {
                 for (String s : pots) {
 
                     if (Bank.containsAnyOf(s)) {
-
-                        do {
-
-                        } while (!Bank.withdraw(s, 1) && ++counter % 10 != 0);
-
+                        Execution.delayWhile(() -> !Bank.withdraw(s, 1), 25000);
                         break;
                     }
+                    
                 }
             }
 
             if (Familiars.getLoaded().size() == 0) {
 
                 if (Bank.containsAnyOf(pouch)) {
-
-                    do {
-
-                    } while (!Bank.withdraw(pouch, 1) && ++counter % 10 != 0);
-
+                    Execution.delayWhile(() -> !Bank.withdraw(pouch, 1), 25000);
+                    
                 } else {
                     stop();
                 }
             }
 
-            do {
-
-            } while (!Bank.close() && ++counter % 10 != 0);
-
+            Execution.delayWhile(() -> !Bank.close(), 20000);
         }
     }
 
     private void summon() {
         if (Inventory.containsAnyOf("Spirit spider pouch")) {
-
             Inventory.getItems("Spirit spider pouch").first().click();
-
-            Execution.delayWhile (() -> Familiars.getLoaded().size() == 0 && ++counter % 10 != 0);
+            Execution.delayWhile(() -> Familiars.getLoaded().size() == 0, 10000);
 
         } else if (isVisible("Well of Goodwill")) {
             bank();
@@ -217,8 +192,8 @@ public class RedSpidersEggs extends LoopingBot {
         Summoning.FamiliarOption.getLeftClick().select();
     }
 
-    private boolean pick() {    
-        if (pickedNoneTimes > 20) {
+    private boolean pick() {
+        if (pickedNoneCounter > 20) {
             walk(bankCoord);
         }
         
@@ -231,8 +206,8 @@ public class RedSpidersEggs extends LoopingBot {
                 for (int i = 0; i < 10; i++) {
 
                     if (eggs.interact("Take", eggs.getDefinition().getName())) {
-                        Execution.delayUntil(() -> Inventory.getUsedSlots() > usedSlots, 500, 5000);
-                        pickedNoneTimes = 0;
+                        Execution.delayUntil(() -> Inventory.getUsedSlots() > usedSlots, 10000);
+                        pickedNoneCounter = 0;
                         return true;
                     }
 
@@ -243,16 +218,16 @@ public class RedSpidersEggs extends LoopingBot {
                     walk(eggsCoordinates);
                 }
 
-                pickedNoneTimes = 0;
+                pickedNoneCounter = 0;
                 return true;
 
             } else {
-                pickedNoneTimes++;
+                pickedNoneCounter++;
                 return false;
             }
 
         } else {
-            pickedNoneTimes++;
+            pickedNoneCounter++;
             return false;
         }
     }
@@ -273,7 +248,19 @@ public class RedSpidersEggs extends LoopingBot {
             pot.click();
 
         } else {
-            Execution.delayUntil(() -> !isRestore());
+            Execution.delayWhile(() -> isRestore(), 45000);
+            
+            if (isRestore()) {
+                
+                if (isVisible("Well of Goodwill")) {
+                    bank();
+                    
+                } else {
+                    walk(bankCoord);
+                    bank();
+                }
+                
+            }
         }
     }
 
@@ -290,7 +277,7 @@ public class RedSpidersEggs extends LoopingBot {
             do {
                 x++;
                 path = buildPath(new Coordinate(x, y));
-            } while ((path == null || !path.step()) && ++counter % 10 != 0);
+            } while((path == null || !path.step()) && ++loopCounter % 10 != 0);
 
             walk(new Coordinate(c.getX() + 1, c.getY()));
         }
