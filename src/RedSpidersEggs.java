@@ -9,9 +9,11 @@ import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.local.hud.interfaces.SpriteItem;
 import com.runemate.game.api.hybrid.location.Coordinate;
 import com.runemate.game.api.hybrid.location.navigation.basic.BresenhamPath;
+import com.runemate.game.api.hybrid.queries.results.SpriteItemQueryResults;
 import com.runemate.game.api.hybrid.region.GameObjects;
 import com.runemate.game.api.hybrid.region.GroundItems;
 import com.runemate.game.api.hybrid.region.Players;
+import com.runemate.game.api.hybrid.util.calculations.Random;
 import com.runemate.game.api.rs3.local.hud.interfaces.Summoning;
 import com.runemate.game.api.rs3.region.Familiars;
 import com.runemate.game.api.script.Execution;
@@ -20,21 +22,23 @@ import java.util.regex.Pattern;
 
 public class RedSpidersEggs extends LoopingBot {
 
-    private Coordinate bankCoord = new Coordinate(3164, 3454);
+    private final Coordinate bankCoord = new Coordinate(3164, 3454);
+    
+    private final String scroll = "Egg spawn scroll";
 
-    private String[] potsAndScroll = new String[]{"Summoning potion (4)", "Summoning potion (3)", "Summoning potion (2)", "Summoning potion (1)", "Egg spawn scroll"};
+    private final String[] potsAndScroll = new String[]{"Summoning potion (4)", "Summoning potion (3)", "Summoning potion (2)", "Summoning potion (1)", scroll};
 
-    private String[] pots = new String[]{"Summoning potion (4)", "Summoning potion (3)", "Summoning potion (2)", "Summoning potion (1)"};
+    private final String[] pots = new String[]{"Summoning potion (4)", "Summoning potion (3)", "Summoning potion (2)", "Summoning potion (1)"};
 
-    private String pouch = "Spirit spider pouch";
+    private final String pouch = "Spirit spider pouch";
 
     private enum State {
-        BANK, SUMMON, SPAWN, PICK, RESTORE, WALKTOBANK;
+        BANK, SUMMON, SPAWN, PICK, RESTORE;
     }
 
-    private int counter = 0;
-    
     private int pickedNoneTimes = 0;
+
+    private GroundItem eggs;
 
     @Override
     public void onStop() {
@@ -65,24 +69,15 @@ public class RedSpidersEggs extends LoopingBot {
                 case RESTORE:
                     restore();
                     break;
-                case WALKTOBANK:
-                    walk(bankCoord);
-                    break;
             }
         }
     }
 
     private State getCurrentState() {
-        if (!Inventory.containsAnyOf("Egg spawn scroll") || Inventory.isFull()) {
+        if (isBank()) {
+            return State.BANK;
 
-            if (isVisible("Well of Goodwill") || Bank.isOpen()) {
-                return State.BANK;
-
-            } else {
-                return State.WALKTOBANK;
-            }
-
-        } else if (pick()) {
+        } else if ((eggs = GroundItems.newQuery().names("Red spiders' eggs").results().nearest()) != null) {
             return State.PICK;
 
         } else if (Familiars.getLoaded().size() > 0) {
@@ -99,176 +94,135 @@ public class RedSpidersEggs extends LoopingBot {
         }
     }
 
-    private boolean isVisible(String name) {
-        GameObject obj = GameObjects.newQuery().names(name).results().nearest();
-
-        if (obj != null) {
-
-            if (obj.isVisible() || Camera.turnTo(obj)) {
-                return true;
-
-            } else {
-                return false;
-            }
-
-        } else {
-            return false;
-        }
+    private boolean isBank() {
+        return Bank.isOpen()
+                || Inventory.isFull()
+                || !Inventory.containsAnyOf(scroll)
+                || Familiars.getLoaded().isEmpty()
+                && !Inventory.containsAnyOf(pouch);
     }
 
     private void bank() {
-        if (!Bank.isOpen()) {
-            GameObject bank = GameObjects.newQuery().names("Well of Goodwill").results().nearest();
+        if (Bank.isOpen() || openBank()) {
 
-            do {
+            if (checkOrWithdrawScroll() && checkOrDepositInventory()
+                    && checkOrWithdrawPot() && checkOrWithdrawPouch()) {
 
-            } while (!bank.interact("Open Bank", bank.getDefinition().getName()) && ++counter % 10 != 0);
-
-            Execution.delayUntil(() -> Bank.isOpen(), 500, 5000);
-            
-            if (!Bank.isOpen()) {
-                walk(bankCoord);
+                Bank.close();
             }
-
-        } else {
-            
-            if (Summoning.getPoints() < 1 && !Bank.containsAnyOf(Pattern.compile("Summoning potion \\([1-4]\\)"))) {
-                stop();    
-            }
-
-            if (!Inventory.containsAnyOf("Egg spawn scroll")) {
-
-                if (!Bank.containsAnyOf("Egg spawn scroll")) {
-                    stop();
-
-                } else {
-
-                    do {
-
-                    } while (!Bank.withdraw("Egg spawn scroll", 9999999) && ++counter % 10 != 0);
-
-                }
-            }
-
-            do {
-
-            } while (!Bank.depositAllExcept(potsAndScroll) && ++counter % 10 != 0);
-
-            if (Inventory.getEmptySlots() < 20) {
-
-                do {
-
-                } while (!Bank.depositAllExcept("Egg spawn scroll") && ++counter % 10 != 0);
-
-            }
-
-            if (!Inventory.containsAnyOf(Pattern.compile("Summoning potion \\([3-4]\\)"))) {
-
-                for (String s : pots) {
-
-                    if (Bank.containsAnyOf(s)) {
-
-                        do {
-
-                        } while (!Bank.withdraw(s, 1) && ++counter % 10 != 0);
-
-                        break;
-                    }
-                }
-            }
-
-            if (Familiars.getLoaded().size() == 0) {
-
-                if (Bank.containsAnyOf(pouch)) {
-
-                    do {
-
-                    } while (!Bank.withdraw(pouch, 1) && ++counter % 10 != 0);
-
-                } else {
-                    stop();
-                }
-            }
-
-            do {
-
-            } while (!Bank.close() && ++counter % 10 != 0);
-
         }
     }
 
-    private void summon() {
-        if (Inventory.containsAnyOf("Spirit spider pouch")) {
+    private boolean openBank() {
+        GameObject bank = GameObjects.newQuery().names("Well of Goodwill").results().nearest();
 
-            Inventory.getItems("Spirit spider pouch").first().click();
+        if (bank != null && (bank.isVisible() || Camera.turnTo(bank))) {
 
-            Execution.delayWhile (() -> Familiars.getLoaded().size() == 0 && ++counter % 10 != 0);
-
-        } else if (isVisible("Well of Goodwill")) {
-            bank();
-
-        } else {
-            walk(bankCoord);
-            bank();
+            if (bank.interact("Open Bank", bank.getDefinition().getName())) {
+                Execution.delayUntil(() -> Bank.isOpen(), 500, 5000);
+            }
         }
+
+        return Bank.isOpen();
+    }
+
+    private boolean checkOrWithdrawScroll() {
+        if (!Inventory.containsAnyOf(scroll)) {
+
+            if (!Bank.containsAnyOf(scroll)) {
+                stop();
+
+            } else {
+                return Bank.withdraw(scroll, 9999999);
+            }
+        }
+
+        return true;
+    }
+
+    private boolean checkOrDepositInventory() {
+        if (Inventory.getEmptySlots() < 20) {
+
+            if (Inventory.getQuantity(pots) < 8) {
+                return Bank.depositAllExcept(potsAndScroll);
+
+            } else {
+                return Bank.depositAllExcept(scroll);
+            }
+        }
+
+        return true;
+    }
+
+    private boolean checkOrWithdrawPot() {
+        if (Summoning.getPoints() < 1 && !Bank.containsAnyOf(Pattern.compile("Summoning potion \\([1-4]\\)"))) {
+            stop();
+        }
+
+        if (!Inventory.containsAnyOf(Pattern.compile("Summoning potion \\([3-4]\\)"))) {
+
+            for (String s : pots) {
+
+                if (Bank.containsAnyOf(s)) {
+                    return Bank.withdraw(s, 1);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean checkOrWithdrawPouch() {
+        if (Familiars.getLoaded().isEmpty() && !Inventory.containsAnyOf(pouch)) {
+
+            if (Bank.containsAnyOf(pouch)) {
+                return Bank.withdraw(pouch, 1);
+
+            } else {
+                stop();
+            }
+        }
+
+        return true;
+    }
+
+    private void summon() {
+        Inventory.getItems(pouch).first().click();
+        Execution.delayWhile(() -> Familiars.getLoaded().isEmpty(), 5000);
     }
 
     private void spawn() {
         Summoning.FamiliarOption.getLeftClick().select();
     }
 
-    private boolean pick() {    
+    private void pick() {
         if (pickedNoneTimes > 20) {
-            walk(bankCoord);
+            walk(eggs.getPosition());
         }
-        
-        GroundItem eggs = GroundItems.newQuery().names("Red spiders' eggs").results().nearest();
-        if (eggs != null && !Inventory.isFull()) {
 
-            if (eggs.isVisible() || Camera.turnTo(eggs)) {
-                int usedSlots = Inventory.getUsedSlots();
+        if (eggs.isVisible() || Camera.turnTo(eggs)) {
+            int usedSlots = Inventory.getUsedSlots();
 
-                for (int i = 0; i < 10; i++) {
-
-                    if (eggs.interact("Take", eggs.getDefinition().getName())) {
-                        Execution.delayUntil(() -> Inventory.getUsedSlots() > usedSlots, 500, 5000);
-                        pickedNoneTimes = 0;
-                        return true;
-                    }
-
-                }
-                Coordinate eggsCoordinates = eggs.getPosition();
-
-                if (eggsCoordinates != null) {
-                    walk(eggsCoordinates);
-                }
-
+            if (eggs.interact("Take", eggs.getDefinition().getName())) {
+                Execution.delayUntil(() -> Inventory.getUsedSlots() > usedSlots, 500, 5000);
                 pickedNoneTimes = 0;
-                return true;
 
             } else {
                 pickedNoneTimes++;
-                return false;
             }
 
         } else {
             pickedNoneTimes++;
-            return false;
         }
     }
 
     private boolean isRestore() {
-        if (Summoning.getPoints() < 1 || Summoning.getSpecialMovePoints() < 6) {
-            return true;
-
-        } else {
-            return false;
-        }
+        return Summoning.getPoints() < 1 || Summoning.getSpecialMovePoints() < 6;
     }
 
     private void restore() {
-        SpriteItem pot = Inventory.getItems(pots).first();
-
+        SpriteItemQueryResults potions = Inventory.getItems(pots);
+        SpriteItem pot = potions.get(Random.nextInt(potions.size()));
         if (pot != null) {
             pot.click();
 
@@ -278,33 +232,14 @@ public class RedSpidersEggs extends LoopingBot {
     }
 
     private void walk(Coordinate c) {
-        BresenhamPath path = buildPath(c);
+        BresenhamPath path = BresenhamPath.buildTo(bankCoord);
 
         if (path != null) {
             path.step();
+            Execution.delayUntil(() -> !Players.getLocal().isMoving(), 2500, 20000);
 
         } else {
-            int x = Players.getLocal().getPosition().getX();
-            int y = Players.getLocal().getPosition().getY();
-
-            do {
-                x++;
-                path = buildPath(new Coordinate(x, y));
-            } while ((path == null || !path.step()) && ++counter % 10 != 0);
-
-            walk(new Coordinate(c.getX() + 1, c.getY()));
+            stop();
         }
-        
-        Execution.delayUntil(() -> !Players.getLocal().isMoving(), 2500, 20000);
-    }
-
-    private BresenhamPath buildPath(Coordinate c) {
-        BresenhamPath path;
-        try {
-            path = BresenhamPath.buildTo(bankCoord);
-        } catch (Exception ex) {
-            return null;
-        }
-        return path;
     }
 }
