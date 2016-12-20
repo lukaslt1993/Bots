@@ -1,5 +1,5 @@
 <manifest>
-    <main-class>RedSpidersEggs</main-class>
+    <main-class>main.EggSpawner</main-class>
     <name>Red spiders' eggs spawner</name>
     <tag-line>Which came first, the spider or the egg?</tag-line>
     <description>Set left click to special move. Start near Well of Goodwill. Supports potions. Buy cheap, sell expensive.</description>
@@ -12,7 +12,7 @@
         <category>MONEYMAKING</category>
     </categories>
     <internal-id>Red spiders' eggs spawner</internal-id>
-    <open-source>false</open-source>
+    <open-source>true</open-source>
     <hidden>false</hidden>
     <access>public</access>
     <tags>
