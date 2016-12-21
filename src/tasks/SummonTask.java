@@ -9,9 +9,11 @@ import tasks.common.Constants;
 
 public class SummonTask extends Task {
     
+    private final Validators VALIDATORS = new Validators();
+    
     @Override
     public boolean validate() {
-        return Validators.isSummon();
+        return VALIDATORS.isSummon();
     }
 
     @Override

@@ -18,10 +18,12 @@ import tasks.common.Utils;
 public class BankTask extends Task {
 
     private final String[] ITEM_TO_KEEP_NAMES = new String[]{"Summoning potion (4)", "Summoning potion (3)", "Summoning potion (2)", "Summoning potion (1)", Constants.SCROLL_NAME};
+    
+    private final Validators VALIDATORS = new Validators();
 
     @Override
     public boolean validate() {
-        return Validators.isBank();
+        return VALIDATORS.isBank();
     }
 
     @Override
