@@ -14,7 +14,7 @@ class Validators {
     
     private final EggSpawner BOT = (EggSpawner) Environment.getBot();
     
-    protected boolean isBank() {
+    boolean isBank() {
         return Bank.isOpen()
                 || Inventory.isFull()
                 || !Inventory.containsAnyOf(Constants.SCROLL_NAME)
@@ -24,21 +24,21 @@ class Validators {
                 && !Inventory.containsAnyOf(Constants.POTION_NAMES);
     }
 
-    protected boolean isPick() {
+    boolean isPick() {
         BOT.setEggs(GroundItems.newQuery().names("Red spiders' eggs").results().nearest());
-        return !isBank() && BOT.getEggs() != null;
+        return BOT.getEggs() != null && !isBank();
     }
 
-    protected boolean isRestore() {
+    boolean isRestore() {
         return (Summoning.getPoints() < 1 || Summoning.getSpecialMovePoints() < 6)
                 && !isBank() && !isPick();
     }
     
-    protected boolean isSummon() {
+    boolean isSummon() {
         return !isBank() && !isPick() && !isRestore() && Players.getLocal().getFamiliar() == null;
     }
     
-    protected boolean isSpawn() {
+    boolean isSpawn() {
         return !isBank() && !isPick() && !isSummon() && !isRestore();
     }
 }
