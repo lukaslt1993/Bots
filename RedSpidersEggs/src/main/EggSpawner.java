@@ -21,14 +21,14 @@ public class EggSpawner extends TaskBot {
         this.eggs = eggs;
     }
     
-    private int nothingSpawnedCounter = 0;
+    private int noDropCounter = 0;
 
-    public int getNothingSpawnedCounter() {
-        return nothingSpawnedCounter;
+    public int getNoDropCounter() {
+        return noDropCounter;
     }
 
-    public void setNothingSpawnedCounter(int nothingSpawnedCounter) {
-        this.nothingSpawnedCounter = nothingSpawnedCounter;
+    public void setNoDropCounter(int noDropCounter) {
+        this.noDropCounter = noDropCounter;
     }
 
     @Override
