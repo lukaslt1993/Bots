@@ -3,7 +3,7 @@
     <name>Red spiders' eggs spawner</name>
     <tag-line>Which came first, the spider or the egg?</tag-line>
     <description>Set left click to special move. Start near Well of Goodwill. Supports potions. Buy cheap, sell expensive.</description>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <compatibility>
         <game>RS3</game>
     </compatibility>
