@@ -21,7 +21,7 @@ public class SpawnTask extends Task {
 
     @Override
     public void execute() {
-        if (BOT.getNoDropCounter() > 5) {
+        if (BOT.getNoDropCounter() > 10) {
             Utils.walk(Constants.BANK_COORD);
         }
         
