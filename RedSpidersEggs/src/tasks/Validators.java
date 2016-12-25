@@ -4,7 +4,6 @@ package tasks;
 import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
-import com.runemate.game.api.hybrid.region.GroundItems;
 import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.rs3.local.hud.interfaces.Summoning;
 import main.EggSpawner;
@@ -25,8 +24,7 @@ class Validators {
     }
 
     boolean isPick() {
-        BOT.setEggs(GroundItems.newQuery().names("Red spiders' eggs").results().nearest());
-        return BOT.getEggs() != null && !isBank();
+        return !BOT.getDrop().isEmpty() && !isBank();
     }
 
     boolean isRestore() {

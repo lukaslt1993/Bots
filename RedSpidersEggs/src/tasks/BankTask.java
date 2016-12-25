@@ -28,6 +28,7 @@ public class BankTask extends Task {
 
     @Override
     public void execute() {
+        System.out.println("Bank");
         if (Bank.isOpen() || openBank()) {
             
             if (depositInventoryOrContinue() && withdrawScrollOrContinue()
@@ -46,7 +47,7 @@ public class BankTask extends Task {
 
         if (bank != null && (bank.isVisible() || Camera.turnTo(bank))) {
 
-            if (bank.interact("Open Bank", bank.getDefinition().getName())) {
+            if (bank.interact("Open Bank")) {
                 Execution.delayUntil(() -> Bank.isOpen(), 500, 5000);
             }
         }
