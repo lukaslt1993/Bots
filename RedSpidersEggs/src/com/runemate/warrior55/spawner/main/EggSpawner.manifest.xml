@@ -1,0 +1,30 @@
+<manifest>
+    <main-class>com.runemate.warrior55.spawner.main.EggSpawner</main-class>
+    <name>Red spiders' eggs spawner</name>
+    <tag-line>Which came first, the spider or the egg?</tag-line>
+    <description>Set left click to special move. Start near Well of Goodwill. Supports potions. Buy cheap, sell expensive.</description>
+    <version>1.0.2</version>
+    <compatibility>
+        <game>RS3</game>
+    </compatibility>
+    <categories>
+        <category>SUMMONING</category>
+        <category>MONEYMAKING</category>
+    </categories>
+    <internal-id>Red spiders' eggs spawner</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Egg</tag>
+        <tag>Spider</tag>
+        <tag>Red</tag>
+        <tag>Spawn</tag>
+        <tag>Spawner</tag>
+        <tag>Moneymaking</tag>
+        <tag>Money</tag>
+        <tag>Cash</tag>
+        <tag>Summoning</tag>
+        <tag>Summon</tag>
+    </tags>
+</manifest>
