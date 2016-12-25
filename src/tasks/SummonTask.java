@@ -18,6 +18,7 @@ public class SummonTask extends Task {
 
     @Override
     public void execute() {
+        System.out.println("Summon");
         SpriteItem pouch = Inventory.getItems(Constants.POUCH_NAME).first();
         
         if (pouch != null && pouch.click()) {

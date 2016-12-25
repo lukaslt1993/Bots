@@ -1,7 +1,8 @@
 
 package main;
 
-import com.runemate.game.api.hybrid.entities.GroundItem;
+import com.runemate.game.api.hybrid.queries.results.LocatableEntityQueryResults;
+import com.runemate.game.api.hybrid.region.GroundItems;
 import com.runemate.game.api.script.framework.task.TaskBot;
 import tasks.BankTask;
 import tasks.PickTask;
@@ -11,14 +12,14 @@ import tasks.SummonTask;
 
 public class EggSpawner extends TaskBot {
     
-    private GroundItem eggs;
+    private LocatableEntityQueryResults drop = GroundItems.newQuery().names("Red spiders' eggs").results();
 
-    public GroundItem getEggs() {
-        return eggs;
+    public LocatableEntityQueryResults getDrop() {
+        return drop;
     }
 
-    public void setEggs(GroundItem eggs) {
-        this.eggs = eggs;
+    public void setDrop(LocatableEntityQueryResults drop) {
+        this.drop = drop;
     }
     
     private int noDropCounter = 0;
@@ -33,7 +34,7 @@ public class EggSpawner extends TaskBot {
 
     @Override
     public void onStart(String... args){
-        setLoopDelay(250, 500);
+        setLoopDelay(25, 50);
         add(new BankTask(), new PickTask(), new RestoreTask(), new SpawnTask(), new SummonTask());
     }
 }

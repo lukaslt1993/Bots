@@ -18,6 +18,7 @@ public class RestoreTask extends Task {
 
     @Override
     public void execute() {
+        System.out.println("Restore");
         SpriteItem pot = Inventory.getItems(Constants.POTION_NAMES).random();
 
         if (pot != null) {
