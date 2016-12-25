@@ -1,0 +1,32 @@
+<manifest>
+    <main-class>com.runemate.warrior55.tanner.main.PortableCrafter</main-class>
+    <name>Dragonhide tanner</name>
+    <tag-line>Let's heat the crafter.</tag-line>
+    <description>Have hides in preset 1. Start near portable crafter.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game>RS3</game>
+    </compatibility>
+    <categories>
+        <category>CRAFTING</category>
+        <category>MONEYMAKING</category>
+    </categories>
+    <internal-id>Dragonhide tanner</internal-id>
+    <open-source>true</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Tan</tag>
+        <tag>Tanner</tag>
+        <tag>Craft</tag>
+        <tag>Crafter</tag>
+        <tag>Hide</tag>
+        <tag>Dragon</tag>
+        <tag>Dragonhide</tag>
+        <tag>Moneymaking</tag>
+        <tag>Money</tag>
+        <tag>Cash</tag>
+        <tag>Leather</tag>
+        <tag>Portable</tag>
+    </tags>
+</manifest>
