@@ -2,8 +2,8 @@
     <main-class>com.runemate.warrior55.spawner.main.EggSpawner</main-class>
     <name>Red spiders' eggs spawner</name>
     <tag-line>Which came first, the spider or the egg?</tag-line>
-    <description>Set left click to special move. Start near Well of Goodwill. Supports potions. Buy cheap, sell expensive.</description>
-    <version>1.0.2</version>
+    <description>Spawns red spiders' eggs near the Well of Goodwill.</description>
+    <version>1.0.3</version>
     <compatibility>
         <game>RS3</game>
     </compatibility>
