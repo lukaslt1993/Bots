@@ -2,8 +2,8 @@
     <main-class>com.runemate.warrior55.tanner.main.PortableCrafter</main-class>
     <name>Dragonhide tanner</name>
     <tag-line>Let's heat the crafter.</tag-line>
-    <description>Have hides in preset 1. Start near portable crafter.</description>
-    <version>1.0.0</version>
+    <description>Tans dragonhide using already deployed portable.</description>
+    <version>1.0.1</version>
     <compatibility>
         <game>RS3</game>
     </compatibility>
