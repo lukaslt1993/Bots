@@ -14,7 +14,7 @@ public class WithdrawPreset extends LeafTask {
         Bank.loadPreset(1);
         Execution.delayUntil(() -> !Bank.isOpen(), 2500);
         
-        if (!Bank.isOpen() && !Inventory.isFull()) {
+        if (!Bank.isOpen() && Inventory.isEmpty()) {
             Environment.getBot().stop();
         }
     }
