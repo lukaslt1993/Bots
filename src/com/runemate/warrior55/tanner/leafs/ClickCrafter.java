@@ -2,6 +2,7 @@ package com.runemate.warrior55.tanner.leafs;
 
 import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.entities.GameObject;
+import com.runemate.game.api.hybrid.local.Worlds;
 import com.runemate.game.api.hybrid.local.hud.interfaces.WorldHop;
 import com.runemate.game.api.hybrid.queries.results.LocatableEntityQueryResults;
 import com.runemate.game.api.hybrid.region.GameObjects;
@@ -69,7 +70,7 @@ public class ClickCrafter extends LeafTask {
 
         reader.close();
 
-        if (worldNumber != 0) {
+        if (worldNumber != 0 && Worlds.getCurrent() != worldNumber) {
             Execution.delayUntil(() -> WorldHop.hopTo(worldNumber), 60000);
         }    
     }
