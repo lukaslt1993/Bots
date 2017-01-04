@@ -2,10 +2,11 @@ package com.runemate.warrior55.tanner.leafs;
 
 import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.entities.GameObject;
+import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.local.Worlds;
 import com.runemate.game.api.hybrid.local.hud.interfaces.WorldHop;
-import com.runemate.game.api.hybrid.queries.results.LocatableEntityQueryResults;
 import com.runemate.game.api.hybrid.region.GameObjects;
+import com.runemate.game.api.hybrid.util.calculations.Random;
 import com.runemate.game.api.rs3.local.hud.interfaces.MakeXInterface;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.tree.LeafTask;
@@ -13,6 +14,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,35 +23,50 @@ public class ClickCrafter extends LeafTask {
 
     private int noCrafterCounter = 0;
     private int worldNumber = 0;
-    private LocatableEntityQueryResults<GameObject> crafters;
+    private int failedClickCounter = 0;
+    private int failedClickStreak = 0;
+    private GameObject crafter = null;
+    private final Queue<Integer> QUEUE = new LinkedList<Integer>();
 
     @Override
     public void execute() {
-        if (noCrafterCounter > 5) {
+        if (noCrafterCounter > 5 || failedClickStreak > 12) {
             Environment.getBot().stop();
         }
 
-        Execution.delayUntil(() -> !(crafters = GameObjects.newQuery().names("Portable crafter").results()).isEmpty(), 60000);
+        if (crafter == null || !crafter.isValid()) {
+            Execution.delayUntil(() -> (crafter = GameObjects.newQuery().names("Portable crafter").results().nearest()) != null, 60000);
+        }
 
-        if (!crafters.isEmpty()) {
+        if (crafter != null && failedClickCounter < 6) {
             noCrafterCounter = 0;
-            crafters.nearest().click();
+
+            if (crafter.click()) {
+                failedClickCounter = 0;
+                failedClickStreak = 0;
+
+            } else {
+                failedClickCounter++;
+                failedClickStreak++;
+            }
+
             Execution.delayUntil(() -> MakeXInterface.isOpen(), 2500);
 
         } else {
             noCrafterCounter++;
-            
+
             try {
-                hopWorld();
+                findWorldNumber();
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }
-            
+
+            hopWorld();
             execute();
         }
     }
 
-    private void hopWorld() throws IOException {
+    private void findWorldNumber() throws IOException {
         URL url = new URL("https://docs.google.com/spreadsheets/d/16Yp-eLHQtgY05q6WBYA2MDyvQPmZ4Yr3RHYiBCBj2Hc/edit#gid=915793480");
         BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
         String line;
@@ -60,8 +78,12 @@ public class ClickCrafter extends LeafTask {
                 line = line.split(",", 2)[1];
                 Matcher m = p.matcher(line);
 
-                if (m.find()) {
-                    worldNumber = Integer.parseInt(m.group());
+                while (m.find()) {
+                    QUEUE.add(Integer.parseInt(m.group()));
+                }
+
+                if (!QUEUE.isEmpty()) {
+                    worldNumber = QUEUE.remove();
                 }
 
                 break;
@@ -69,9 +91,19 @@ public class ClickCrafter extends LeafTask {
         }
 
         reader.close();
+    }
 
+    private void hopWorld() {
         if (worldNumber != 0 && Worlds.getCurrent() != worldNumber) {
-            Execution.delayUntil(() -> WorldHop.hopTo(worldNumber), 60000);
-        }    
+            
+            if (Execution.delayUntil(() -> WorldHop.hopTo(worldNumber), 30000)) {
+                
+                if (Execution.delayUntil(() -> Worlds.getCurrent() == worldNumber, 30000)) {
+                    int[] arr = new int[] {88, 92};
+                    Execution.delayUntil(() -> Camera.turnTo(arr[Random.nextInt(arr.length)], 0.568), 10000);
+                    failedClickCounter = 0;  
+                }  
+            }
+        }
     }
 }

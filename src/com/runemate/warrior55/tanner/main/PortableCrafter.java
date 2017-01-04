@@ -7,9 +7,13 @@ import com.runemate.game.api.script.framework.tree.TreeTask;
 
 public class PortableCrafter extends TreeBot {
 
+        @Override
+        public void onStart(String... args) {
+            setLoopDelay(25, 50);
+        }
+    
 	@Override
 	public TreeTask createRootTask() {
-            setLoopDelay(25, 50);
             return new RootBranch();
 	}
 }
