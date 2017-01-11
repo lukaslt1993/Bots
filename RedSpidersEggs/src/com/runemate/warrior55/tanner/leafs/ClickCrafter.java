@@ -10,6 +10,7 @@ import com.runemate.game.api.hybrid.util.calculations.Random;
 import com.runemate.game.api.rs3.local.hud.interfaces.MakeXInterface;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.tree.LeafTask;
+import com.runemate.warrior55.tanner.main.PortableCrafter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,7 +32,14 @@ public class ClickCrafter extends LeafTask {
     @Override
     public void execute() {
         if (noCrafterCounter > 5 || failedClickStreak > 12) {
-            Environment.getBot().stop();
+            PortableCrafter bot = (PortableCrafter) Environment.getBot();
+
+            if (bot != null) {
+                bot.stop();
+
+            } else {
+                return;
+            }
         }
 
         if (crafter == null || !crafter.isValid()) {
@@ -44,13 +52,12 @@ public class ClickCrafter extends LeafTask {
             if (crafter.click()) {
                 failedClickCounter = 0;
                 failedClickStreak = 0;
+                Execution.delayUntil(() -> MakeXInterface.isOpen(), 2500);
 
             } else {
                 failedClickCounter++;
                 failedClickStreak++;
             }
-
-            Execution.delayUntil(() -> MakeXInterface.isOpen(), 2500);
 
         } else {
             noCrafterCounter++;
@@ -75,7 +82,7 @@ public class ClickCrafter extends LeafTask {
 
             if (line.contains("Crafters,") && (line = reader.readLine()) != null) {
                 Pattern p = Pattern.compile("\\d+");
-                line = line.split(",", 2)[1];
+                line = line.split(",")[1];
                 Matcher m = p.matcher(line);
 
                 while (m.find()) {
@@ -95,14 +102,24 @@ public class ClickCrafter extends LeafTask {
 
     private void hopWorld() {
         if (worldNumber != 0 && Worlds.getCurrent() != worldNumber) {
-            
-            if (Execution.delayUntil(() -> WorldHop.hopTo(worldNumber), 30000)) {
+            Execution.delayUntil(() -> WorldHop.hopTo(worldNumber), 60000);
+
+            if (Execution.delayUntil(() -> Worlds.getCurrent() == worldNumber, 30000)) {
+                Execution.delayUntil(() -> Camera.turnTo(Random.nextInt(88, 97), Random.nextDouble(0.566, 0.568)), 10000);
                 
-                if (Execution.delayUntil(() -> Worlds.getCurrent() == worldNumber, 30000)) {
-                    int[] arr = new int[] {88, 92};
-                    Execution.delayUntil(() -> Camera.turnTo(arr[Random.nextInt(arr.length)], 0.568), 10000);
-                    failedClickCounter = 0;  
-                }  
+                /*for (int i = 0; i < 10; i++) {
+                    Camera.turnTo(Random.nextInt(88, 97), Random.nextDouble(0.566, 0.568));
+                    double pitch = Camera.getPitch();
+                    int yaw = Camera.getYaw();
+
+                    if (!(pitch <= 0.566 || yaw < 88 || yaw > 96)) {
+                        break;
+                    }
+
+                    Execution.delay(2000);
+                }*/
+
+                failedClickCounter = 0;
             }
         }
     }

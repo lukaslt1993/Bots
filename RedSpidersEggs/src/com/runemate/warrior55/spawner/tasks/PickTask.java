@@ -35,16 +35,16 @@ public class PickTask extends Task {
 
     @Override
     public void execute() {
-        GroundItem eggs = BOT.getEggs();
+        GroundItem loot = BOT.getLoot();
         
         if (failedPicksCounter > 5) {
-            Utils.walk(eggs.getPosition());
+            Utils.walk(loot.getPosition());
         }
 
-        if (eggs.isVisible() || Camera.turnTo(eggs)) {
+        if (loot.isVisible() || Camera.turnTo(loot)) {
             int usedSlots = Inventory.getUsedSlots();
 
-            if (eggs.interact("Take", eggs.getDefinition().getName())) {
+            if (loot.interact("Take", loot.getDefinition().getName())) {
                 Execution.delayUntil(() -> Inventory.getUsedSlots() > usedSlots, 500, 5000);
                 failedPicksCounter = 0;
 

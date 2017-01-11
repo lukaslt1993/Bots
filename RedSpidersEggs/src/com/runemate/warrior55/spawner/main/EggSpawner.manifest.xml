@@ -1,9 +1,9 @@
 <manifest>
     <main-class>com.runemate.warrior55.spawner.main.EggSpawner</main-class>
-    <name>Red spiders' eggs spawner</name>
+    <name>Cash summoner</name>
     <tag-line>Which came first, the spider or the egg?</tag-line>
-    <description>Spawns red spiders' eggs near the Well of Goodwill.</description>
-    <version>1.0.3</version>
+    <description>Spawns red spiders' eggs or casts fruitfall near the Well of Goodwill.</description>
+    <version>1.1.0</version>
     <compatibility>
         <game>RS3</game>
     </compatibility>
@@ -19,12 +19,15 @@
         <tag>Egg</tag>
         <tag>Spider</tag>
         <tag>Red</tag>
-        <tag>Spawn</tag>
+        <tag>Fruitfall</tag>
         <tag>Spawner</tag>
         <tag>Moneymaking</tag>
-        <tag>Money</tag>
-        <tag>Cash</tag>
-        <tag>Summoning</tag>
-        <tag>Summon</tag>
+        <tag>Bat</tag>
+        <tag>Cashmaking</tag>
+        <tag>Scroll</tag>
+        <tag>Pouch</tag>
     </tags>
+    <resources>
+        <resource>com/runemate/warrior55/spawner/gui/GUI.fxml</resource>
+    </resources>
 </manifest>
