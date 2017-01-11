@@ -17,16 +17,16 @@ class Validators {
     boolean isBank() {
         return Bank.isOpen()
                 || Inventory.isFull()
-                || !Inventory.containsAnyOf(Constants.SCROLL_NAME)
+                || !Inventory.containsAnyOf(BOT.getScrollName())
                 || Players.getLocal().getFamiliar() == null
-                && !Inventory.containsAnyOf(Constants.POUCH_NAME)
+                && !Inventory.containsAnyOf(BOT.getPouchName())
                 || Summoning.getPoints() < 1
                 && !Inventory.containsAnyOf(Constants.POTION_NAMES);
     }
 
     boolean isPick() {
-        BOT.setEggs(GroundItems.newQuery().names("Red spiders' eggs").results().nearest());
-        return BOT.getEggs() != null && !isBank();
+        BOT.setLoot(GroundItems.newQuery().names(BOT.getLootNames()).results().nearest());
+        return BOT.getLoot() != null && !isBank();
     }
 
     boolean isRestore() {

@@ -3,7 +3,7 @@
     <name>Dragonhide tanner</name>
     <tag-line>Let's heat the crafter.</tag-line>
     <description>Tans dragonhide using already deployed portable.</description>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <compatibility>
         <game>RS3</game>
     </compatibility>
@@ -16,15 +16,15 @@
     <hidden>false</hidden>
     <access>public</access>
     <tags>
-        <tag>Tan</tag>
+        <tag>Black</tag>
         <tag>Tanner</tag>
-        <tag>Craft</tag>
+        <tag>Crafting</tag>
         <tag>Crafter</tag>
-        <tag>Hide</tag>
-        <tag>Dragon</tag>
+        <tag>Tanning</tag>
+        <tag>Royal</tag>
         <tag>Dragonhide</tag>
         <tag>Moneymaking</tag>
-        <tag>Money</tag>
+        <tag>Cashmaking</tag>
         <tag>Portable</tag>
     </tags>
 </manifest>
