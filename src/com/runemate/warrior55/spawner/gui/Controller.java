@@ -2,6 +2,8 @@
 package com.runemate.warrior55.spawner.gui;
 
 import com.runemate.game.api.hybrid.Environment;
+import com.runemate.game.api.hybrid.region.Players;
+import com.runemate.game.api.script.Execution;
 import com.runemate.warrior55.spawner.main.EggSpawner;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -57,6 +59,7 @@ public class Controller implements Initializable {
 
             if (BOT.isPaused()) {
                 BOT.resume();
+                //Execution.delayUntil(() -> Players.getLocal() != null, 60000);
             }
         };
     }
