@@ -12,6 +12,7 @@ import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
 import com.runemate.game.api.hybrid.queries.results.SpriteItemQueryResults;
+import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.warrior55.spawner.main.EggSpawner;
 import com.runemate.warrior55.spawner.tasks.common.Constants;
 import com.runemate.warrior55.spawner.tasks.common.Utils;
@@ -30,7 +31,7 @@ public class BankTask extends Task {
 
     @Override
     public boolean validate() {
-        return VALIDATORS.isBank();
+        return Players.getLocal() != null && VALIDATORS.isBank();
     }
 
     @Override
