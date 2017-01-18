@@ -3,7 +3,7 @@
     <name>Cash summoner</name>
     <tag-line>Which came first, the spider or the egg?</tag-line>
     <description>Spawns red spiders' eggs or casts fruitfall near the Well of Goodwill.</description>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <compatibility>
         <game>RS3</game>
     </compatibility>

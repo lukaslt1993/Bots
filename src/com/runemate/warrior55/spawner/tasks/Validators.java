@@ -2,7 +2,7 @@
 package com.runemate.warrior55.spawner.tasks;
 
 import com.runemate.game.api.hybrid.Environment;
-import com.runemate.game.api.hybrid.entities.Player;
+//import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.region.GroundItems;
@@ -16,12 +16,12 @@ class Validators {
     private final EggSpawner BOT = (EggSpawner) Environment.getBot();
     
     boolean isBank() {
-        Player player = Players.getLocal();
+        //Player player = Players.getLocal();
         return Bank.isOpen()
                 || Inventory.isFull()
                 || !Inventory.containsAnyOf(BOT.getScrollName())
-                || player != null
-                && player.getFamiliar() == null
+                || /* player != null
+                && */ Players.getLocal().getFamiliar() == null
                 && !Inventory.containsAnyOf(BOT.getPouchName())
                 || Summoning.getPoints() < 1
                 && !Inventory.containsAnyOf(Constants.POTION_NAMES);

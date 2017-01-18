@@ -2,6 +2,7 @@
 package com.runemate.warrior55.spawner.tasks;
 
 import com.runemate.game.api.hybrid.Environment;
+import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.rs3.local.hud.interfaces.Summoning;
 import com.runemate.game.api.script.framework.task.Task;
 import com.runemate.warrior55.spawner.main.EggSpawner;
@@ -16,7 +17,7 @@ public class SpawnTask extends Task {
 
     @Override
     public boolean validate() {
-        return VALIDATORS.isSpawn();
+        return Players.getLocal() != null && VALIDATORS.isSpawn();
     }
 
     @Override

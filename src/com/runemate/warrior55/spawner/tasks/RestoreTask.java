@@ -3,6 +3,7 @@ package com.runemate.warrior55.spawner.tasks;
 
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.local.hud.interfaces.SpriteItem;
+import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
 import com.runemate.warrior55.spawner.tasks.common.Constants;
@@ -13,7 +14,7 @@ public class RestoreTask extends Task {
 
     @Override
     public boolean validate() {
-        return VALIDATORS.isRestore();
+        return Players.getLocal() != null && VALIDATORS.isRestore();
     }
 
     @Override
