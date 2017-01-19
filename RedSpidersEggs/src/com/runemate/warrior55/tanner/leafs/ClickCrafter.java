@@ -80,9 +80,14 @@ public class ClickCrafter extends LeafTask {
 
         while ((line = reader.readLine()) != null) {
 
-            if (line.contains("Crafters,") && (line = reader.readLine()) != null) {
+            if (line.contains("Crafters,")) {
+                
+                do {
+                    line += reader.readLine(); 
+                } while (!line.contains(">"));
+                
                 Pattern p = Pattern.compile("\\d+");
-                line = line.split(",")[1];
+                //line = line.split(",")[1];
                 Matcher m = p.matcher(line);
 
                 while (m.find()) {
