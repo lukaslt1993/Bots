@@ -1,0 +1,34 @@
+<manifest>
+    <main-class>com.runemate.warrior55.summoner.main.Summoner</main-class>
+    <name>TheNewSummoner</name>
+    <tag-line>Which came first, the spider or the egg?</tag-line>
+    <description>Info: goo.gl/sebmzG . I will include description in a proper place the moment I see this bot on the bot store.</description>
+    <version>2.0.0</version>
+    <compatibility>
+        <game>RS3</game>
+    </compatibility>
+    <categories>
+        <category>SUMMONING</category>
+        <category>MONEYMAKING</category>
+    </categories>
+    <internal-id>TheNewSummoner</internal-id>
+    <open-source>false</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Egg</tag>
+        <tag>Spider</tag>
+        <tag>Red</tag>
+        <tag>Fruitfall</tag>
+        <tag>Spawner</tag>
+        <tag>Moneymaking</tag>
+        <tag>Bat</tag>
+        <tag>Cashmaking</tag>
+        <tag>Scroll</tag>
+        <tag>Pouch</tag>
+    </tags>
+    <resources>
+        <resource>com/runemate/warrior55/summoner/gui/View.fxml</resource>
+    </resources>
+    <price>0.08</price>
+</manifest>

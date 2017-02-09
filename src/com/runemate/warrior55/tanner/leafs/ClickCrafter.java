@@ -34,12 +34,15 @@ public class ClickCrafter extends LeafTask {
         if (noCrafterCounter > 5 || failedClickStreak > 12) {
             PortableCrafter bot = (PortableCrafter) Environment.getBot();
 
-            if (bot != null) {
+            /*if (bot != null) {
+                System.out.println("A");
                 bot.stop();
 
             } else {
+                System.out.println("B");
                 return;
-            }
+            }*/
+            Environment.getBot().stop();
         }
 
         if (crafter == null || !crafter.isValid()) {
@@ -69,7 +72,11 @@ public class ClickCrafter extends LeafTask {
             }
 
             hopWorld();
-            execute();
+            PortableCrafter bot = (PortableCrafter) Environment.getBot();
+            
+            if (bot != null && bot.isRunning()) {
+                execute();
+            }
         }
     }
 
@@ -80,14 +87,16 @@ public class ClickCrafter extends LeafTask {
 
         while ((line = reader.readLine()) != null) {
 
-            if (line.contains("Crafters,")) {
+            int index = line.indexOf("Notes:");
+            if (index >= 0) {
                 
-                do {
-                    line += reader.readLine(); 
-                } while (!line.contains(">"));
+                while (!line.contains(">")) {
+                    line += reader.readLine();
+                }
                 
                 Pattern p = Pattern.compile("\\d+");
-                //line = line.split(",")[1];
+                line = line.substring(index);
+                line = line.split(",")[1];
                 Matcher m = p.matcher(line);
 
                 while (m.find()) {
@@ -106,8 +115,10 @@ public class ClickCrafter extends LeafTask {
     }
 
     private void hopWorld() {
+        //System.out.println(worldNumber);
+        
         if (worldNumber != 0 && Worlds.getCurrent() != worldNumber) {
-            Execution.delayUntil(() -> WorldHop.hopTo(worldNumber), 60000);
+            Execution.delayUntil(() -> WorldHop.hopTo(worldNumber), 30000);
 
             if (Execution.delayUntil(() -> Worlds.getCurrent() == worldNumber, 30000)) {
                 Execution.delayUntil(() -> Camera.turnTo(Random.nextInt(88, 97), Random.nextDouble(0.566, 0.568)), 10000);
