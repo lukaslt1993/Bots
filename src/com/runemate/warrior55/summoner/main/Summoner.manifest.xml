@@ -2,7 +2,7 @@
     <main-class>com.runemate.warrior55.summoner.main.Summoner</main-class>
     <name>TheNewSummoner</name>
     <tag-line>Which came first, the spider or the egg?</tag-line>
-    <description>Info: goo.gl/sebmzG . I will include description in a proper place the moment I see this bot on the bot store.</description>
+    <description>Spawns goods, infuses pouches or scrolls.</description>
     <version>2.0.0</version>
     <compatibility>
         <game>RS3</game>
