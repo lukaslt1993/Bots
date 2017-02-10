@@ -13,7 +13,7 @@ public class TimerTask extends Task {
     @Override
     public boolean validate() { 
         Summoner.totalUsage += TIMER.getElapsedTime();
-        return Summoner.totalUsage >= 10800000 && BOT.getMetaData().getHourlyPrice().doubleValue() <= 0;
+        return Summoner.totalUsage >= 10800000 && BOT.getMetaData().getHourlyPrice().doubleValue() <= 0 && BOT.getType().equals("Spawn");
     }
 
     @Override
