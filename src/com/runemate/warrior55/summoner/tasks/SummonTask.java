@@ -13,13 +13,13 @@ import com.runemate.warrior55.summoner.main.Summoner;
 
 public class SummonTask extends Task {
     
-    private final Validators VALIDATORS = new Validators();
+    private final Validators validators = new Validators();
     
-    private final Summoner BOT = (Summoner) Environment.getBot();
+    private final Summoner bot = (Summoner) Environment.getBot();
     
     @Override
     public boolean validate() {
-        return Players.getLocal() != null && VALIDATORS.isSummon();
+        return Players.getLocal() != null && validators.isSummon();
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SummonTask extends Task {
             cc.select(true);
         }
         
-        SpriteItem pouch = Inventory.getItems(BOT.getPouchName()).first();
+        SpriteItem pouch = Inventory.getItems(bot.getPouchName()).first();
         
         if (pouch != null && pouch.click()) {
             Execution.delayWhile(() -> validate(), 5000);

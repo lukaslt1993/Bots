@@ -13,13 +13,13 @@ import com.runemate.warrior55.summoner.tasks.common.Utils;
 
 public class SpawnTask extends Task {
 
-    private final Summoner BOT = (Summoner) Environment.getBot();
+    private final Summoner bot = (Summoner) Environment.getBot();
 
-    private final Validators VALIDATORS = new Validators();
+    private final Validators validators = new Validators();
 
     @Override
     public boolean validate() {
-        return Players.getLocal() != null && VALIDATORS.isSpawn();
+        return Players.getLocal() != null && validators.isSpawn();
     }
 
     @Override
@@ -31,9 +31,9 @@ public class SpawnTask extends Task {
             firstSlot.activate(false);
         }
         
-        if (!BOT.getPouchName().equals("Spirit cobra pouch")) {
+        if (!bot.getPouchName().equals("Spirit cobra pouch")) {
 
-            if (BOT.getNoDropCounter() > 10) {
+            if (bot.getNoDropCounter() > 10) {
                 Utils.walk(Constants.BANK_COORD);
             }
             

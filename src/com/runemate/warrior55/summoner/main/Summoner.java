@@ -20,7 +20,9 @@ import com.runemate.warrior55.summoner.tasks.SummonKyattTask;
 import com.runemate.warrior55.summoner.tasks.SummonTask;
 import com.runemate.warrior55.summoner.tasks.TeleportTask;
 import com.runemate.warrior55.summoner.tasks.TimerTask;
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Scanner;
@@ -28,6 +30,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 public class Summoner extends TaskBot implements EmbeddableUI {
 
@@ -53,7 +57,7 @@ public class Summoner extends TaskBot implements EmbeddableUI {
     
     public static long totalUsage = 0;
 
-    public final Timer TIMER = new Timer(Long.MAX_VALUE);
+    public final Timer timer = new Timer(Long.MAX_VALUE);
 
     private ObjectProperty<Node> botInterfaceProperty;
 
@@ -162,27 +166,29 @@ public class Summoner extends TaskBot implements EmbeddableUI {
         pause();
         setLoopDelay(25, 50);
         add(new BankTask(), new PickTask(), new RestoreTask(), new SpawnTask(), new SummonTask(), new TeleportTask(), new InteractTrapDoorTask(), new InfuseTask(), new BankBarbarianTask(), new SummonKyattTask(), new BankTaverleyTask(), new TimerTask());
+   
         try {
             URLConnection connection = new URL("http://warrior55.byethost12.com/?id=" + Environment.getForumId()).openConnection();
             // to treat JAVA like normal browser
-            connection.addRequestProperty("Cookie", "__test=dbc5a27a82164d79234d9578423a81c0");
+            connection.addRequestProperty("Cookie", "__test=" + getCookie());
             InputStream response = connection.getInputStream();
             Scanner scanner = new Scanner(response);
             totalUsage = scanner.nextLong();
         } catch (Throwable t) {
-            throw new RuntimeException(t);
+            
         }
-        TIMER.start();
+        
+        timer.start();
     }
 
     @Override
     public void onPause() {
-        TIMER.stop();
+        timer.stop();
     }
 
     @Override
     public void onResume() {
-        TIMER.start();
+        timer.start();
     }
 
     @Override
@@ -190,13 +196,47 @@ public class Summoner extends TaskBot implements EmbeddableUI {
         try {
             URLConnection connection = new URL("http://warrior55.byethost12.com/?id="
                     + Environment.getForumId()
-                    + "&usage=" + TIMER.getElapsedTime()).openConnection();
+                    + "&usage=" + timer.getElapsedTime()).openConnection();
             // to treat JAVA like normal browser
-            connection.addRequestProperty("Cookie", "__test=dbc5a27a82164d79234d9578423a81c0");
+            connection.addRequestProperty("Cookie", "__test=" + getCookie());
             // to trigger HTTP GET request
             connection.getInputStream();
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
+    }
+    
+    private String readURL (URL url) throws Exception {
+        URLConnection connection = url.openConnection();
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(
+                        connection.getInputStream()));
+
+        StringBuilder response = new StringBuilder();
+        String inputLine;
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine + "\n");
+        }
+
+        in.close();
+        return response.toString();
+    }
+
+    private String getDecryptor() throws Exception {
+        URL website = new URL("http://warrior55.byethost12.com/aes.js");
+        return readURL(website);
+    }
+    
+    private String getEncryptor() throws Exception {
+        URL website = new URL("http://warrior55.byethost12.com");
+        String content = readURL(website);
+        return content.substring(content.indexOf("<script>") + 8, content.indexOf("document.cookie="));
+    }
+    
+    private String getCookie() throws Exception {
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("js");
+        return (String) engine.eval(getDecryptor() + getEncryptor() + "toHex(slowAES.decrypt(c,2,a,b));");
     }
 }

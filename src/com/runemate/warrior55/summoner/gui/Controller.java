@@ -47,19 +47,19 @@ public class Controller implements Initializable {
     @FXML
     private Label summonLabel;
 
-    private final Summoner BOT = (Summoner) Environment.getBot();
-    private final ObservableList<String> MODES = FXCollections.observableArrayList("Spider eggs", "Cobra eggs", "Fruits"); // Creating a final list for the list of MODES
-    private final ObservableList<String> TYPES = FXCollections.observableArrayList("Spawn", "Infuse");
-    private final ObservableList<String> SUMMON_MODES = FXCollections.observableArrayList("Ring of Kinship", "Taverley");
+    private final Summoner bot = (Summoner) Environment.getBot();
+    private final ObservableList<String> modes = FXCollections.observableArrayList("Spider eggs", "Cobra eggs", "Fruits"); // Creating a final list for the list of modes
+    private final ObservableList<String> types = FXCollections.observableArrayList("Spawn", "Infuse");
+    private final ObservableList<String> summonModes = FXCollections.observableArrayList("Ring of Kinship", "Taverley");
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         startButton.setOnAction(handleButtonClicked()); 
-        modeSelector.getItems().setAll(MODES); 
+        modeSelector.getItems().setAll(modes); 
         modeSelector.getSelectionModel().selectFirst();
-        typeSelector.getItems().setAll(TYPES);
+        typeSelector.getItems().setAll(types);
         typeSelector.getSelectionModel().selectFirst();
-        summonMode.getItems().setAll(SUMMON_MODES);
+        summonMode.getItems().setAll(summonModes);
         summonMode.getSelectionModel().selectFirst();
         summonLabel.setDisable(true);
         summonMode.setDisable(true);
@@ -111,41 +111,41 @@ public class Controller implements Initializable {
                 String mode = modeSelector.getSelectionModel().getSelectedItem();
 
                 if (mode.equals("Spider eggs")) {
-                    BOT.setPouchName("Spirit spider pouch");
-                    BOT.setScrollName("Egg spawn scroll");
-                    BOT.setLootNames(new String[]{"Red spiders' eggs"});
+                    bot.setPouchName("Spirit spider pouch");
+                    bot.setScrollName("Egg spawn scroll");
+                    bot.setLootNames(new String[]{"Red spiders' eggs"});
 
                 } else if (mode.equals("Cobra eggs")) {
-                    BOT.setPouchName("Spirit cobra pouch");
-                    BOT.setScrollName("Oph. incubation scroll");
+                    bot.setPouchName("Spirit cobra pouch");
+                    bot.setScrollName("Oph. incubation scroll");
 
                 } else {
-                    BOT.setPouchName("Fruit bat pouch");
-                    BOT.setScrollName("Fruitfall scroll");
-                    BOT.setLootNames(new String[]{"Papaya fruit", "Orange"});
+                    bot.setPouchName("Fruit bat pouch");
+                    bot.setScrollName("Fruitfall scroll");
+                    bot.setLootNames(new String[]{"Papaya fruit", "Orange"});
                 }
 
-                BOT.setLootAll(lootAll.isSelected());
-                BOT.setUsingPresets(usePresets.isSelected());
-                BOT.setType("Spawn");
+                bot.setLootAll(lootAll.isSelected());
+                bot.setUsingPresets(usePresets.isSelected());
+                bot.setType("Spawn");
                 
             } else {
                 String summoningMode = summonMode.getSelectionModel().getSelectedItem();
                 
                 if (summoningMode.equals("Ring of Kinship")) {
-                    BOT.setSummonMethod("Ring of Kinship");
+                    bot.setSummonMethod("Ring of Kinship");
                     
                 } else {
-                    BOT.setSummonMethod("Taverley");
+                    bot.setSummonMethod("Taverley");
                 }
                 
-                BOT.setType("Summon");
+                bot.setType("Summon");
             }
 
             startButton.setDisable(true);
 
-            if (BOT.isPaused()) {
-                BOT.resume();
+            if (bot.isPaused()) {
+                bot.resume();
             }
         };
     }

@@ -31,11 +31,13 @@ public class Utils {
                 bankPath.step();
 
             } else {
-                Environment.getBot().stop();
+                throw new IllegalStateException("Can not generate walking path");
+                //Environment.getBot().stop();
             }
 
         } else {
-            Environment.getBot().stop();
+            throw new IllegalStateException("Can not generate walking path");
+            //Environment.getBot().stop();
         }
     }
 

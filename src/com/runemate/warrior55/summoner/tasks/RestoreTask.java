@@ -10,11 +10,11 @@ import com.runemate.warrior55.summoner.tasks.common.Constants;
 
 public class RestoreTask extends Task {
     
-    private final Validators VALIDATORS = new Validators();
+    private final Validators validators = new Validators();
 
     @Override
     public boolean validate() {
-        return Players.getLocal() != null && VALIDATORS.isRestore();
+        return Players.getLocal() != null && validators.isRestore();
     }
 
     @Override
