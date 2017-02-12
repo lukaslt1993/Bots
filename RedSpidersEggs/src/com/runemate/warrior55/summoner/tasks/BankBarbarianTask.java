@@ -18,11 +18,11 @@ import com.runemate.warrior55.summoner.tasks.common.Utils;
 
 public class BankBarbarianTask extends Task {
     
-    private final Validators VALIDATORS = new Validators();
+    private final Validators validators = new Validators();
 
     @Override
     public boolean validate() {
-        return VALIDATORS.isBankBarbarian();
+        return validators.isBankBarbarian();
     }
 
     @Override

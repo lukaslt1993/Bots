@@ -32,9 +32,9 @@ public class ClickCrafter extends LeafTask {
     @Override
     public void execute() {
         if (noCrafterCounter > 5 || failedClickStreak > 12) {
-            PortableCrafter bot = (PortableCrafter) Environment.getBot();
+            /*PortableCrafter bot = (PortableCrafter) Environment.getBot();
 
-            /*if (bot != null) {
+            if (bot != null) {
                 System.out.println("A");
                 bot.stop();
 

@@ -17,19 +17,19 @@ import com.runemate.warrior55.summoner.tasks.common.Utils;
 
 public class BankTask extends Task {
 
-    private final Summoner BOT = (Summoner) Environment.getBot();
+    private final Summoner bot = (Summoner) Environment.getBot();
 
-    private String scrollName = BOT.getScrollName();
+    private String scrollName = bot.getScrollName();
 
-    private String pouchName = BOT.getPouchName();
+    private String pouchName = bot.getPouchName();
 
-    private final String[] ITEM_TO_KEEP_NAMES = new String[]{"Summoning potion (4)", "Summoning potion (3)", "Summoning potion (2)", "Summoning potion (1)", scrollName};
+    private final String[] itemToKeepNames = new String[]{"Summoning potion (4)", "Summoning potion (3)", "Summoning potion (2)", "Summoning potion (1)", scrollName};
 
-    private final Validators VALIDATORS = new Validators();
+    private final Validators validators = new Validators();
 
     @Override
     public boolean validate() {
-        return Players.getLocal() != null && VALIDATORS.isBank();
+        return Players.getLocal() != null && validators.isBank();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class BankTask extends Task {
         if (Bank.isOpen() || openBank()) {
             setFields();
 
-            if (BOT.isUsingPresets()) {
+            if (bot.isUsingPresets()) {
                 withdrawPreset();
 
             } else if (depositInventoryOrContinue() && withdrawScrollOrContinue()
@@ -69,7 +69,7 @@ public class BankTask extends Task {
         if (Inventory.getEmptySlots() < 20) {
 
             if (Inventory.getQuantity(Constants.POTION_NAMES) < 8) {
-                return Bank.depositAllExcept(ITEM_TO_KEEP_NAMES);
+                return Bank.depositAllExcept(itemToKeepNames);
 
             } else {
                 return Bank.depositAllExcept(scrollName);
@@ -157,8 +157,8 @@ public class BankTask extends Task {
     }
 
     private void setFields() {
-        scrollName = BOT.getScrollName();
-        pouchName = BOT.getPouchName();
-        ITEM_TO_KEEP_NAMES[4] = scrollName;
+        scrollName = bot.getScrollName();
+        pouchName = bot.getPouchName();
+        itemToKeepNames[4] = scrollName;
     }
 }

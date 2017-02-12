@@ -15,11 +15,11 @@ import java.util.List;
 
 public class InteractTrapDoorTask extends Task {
     
-    private final Validators VALIDATORS = new Validators();
+    private final Validators validators = new Validators();
     
     @Override
     public boolean validate() {
-        return VALIDATORS.isInteractTrapDoor();
+        return validators.isInteractTrapDoor();
     }
     
     @Override

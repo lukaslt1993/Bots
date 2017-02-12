@@ -17,21 +17,21 @@ public class PickTask extends Task {
 
     private int failedPicksCounter = 0;
 
-    private final Validators VALIDATORS = new Validators();
+    private final Validators validators = new Validators();
 
-    private final Summoner BOT = (Summoner) Environment.getBot();
+    private final Summoner bot = (Summoner) Environment.getBot();
 
     @Override
     public boolean validate() {
         if (Players.getLocal() != null) {
 
-            if (VALIDATORS.isPick()) {
-                BOT.setNoDropCounter(0);
+            if (validators.isPick()) {
+                bot.setNoDropCounter(0);
                 return true;
             }
 
-            if (BOT.getType().equals("Spawn") && !Bank.isOpen() && !BOT.isLootAll() && !BOT.getPouchName().equals("Spirit cobra pouch")) {
-                BOT.setNoDropCounter(BOT.getNoDropCounter() + 1);
+            if (bot.getType().equals("Spawn") && !Bank.isOpen() && !bot.isLootAll() && !bot.getPouchName().equals("Spirit cobra pouch")) {
+                bot.setNoDropCounter(bot.getNoDropCounter() + 1);
             }
         }
 
@@ -40,7 +40,7 @@ public class PickTask extends Task {
 
     @Override
     public void execute() {
-        if (BOT.isLootAll()) {
+        if (bot.isLootAll()) {
             pickWithLootAll();
 
         } else {
@@ -49,7 +49,7 @@ public class PickTask extends Task {
     }
 
     private void pickWithLootAll() {
-        if (BOT.getAllLoot().first().interact("Take")) {
+        if (bot.getAllLoot().first().interact("Take")) {
             Execution.delayUntil(() -> LootInventory.isOpen(), 3500);    
         }
 
@@ -60,7 +60,7 @@ public class PickTask extends Task {
     }
 
     private void pickWithoutLootAll() {
-        GroundItem loot = BOT.getLoot();
+        GroundItem loot = bot.getLoot();
 
         if (failedPicksCounter > 5) {
             Coordinate c = loot.getPosition();

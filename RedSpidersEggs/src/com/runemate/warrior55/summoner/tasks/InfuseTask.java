@@ -8,6 +8,7 @@ import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.location.Coordinate;
 import com.runemate.game.api.hybrid.region.GameObjects;
 import com.runemate.game.api.hybrid.region.Players;
+import com.runemate.game.api.hybrid.util.calculations.Random;
 import com.runemate.game.api.rs3.local.hud.interfaces.MakeXInterface;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
@@ -16,13 +17,16 @@ import com.runemate.warrior55.summoner.tasks.common.Utils;
 
 public class InfuseTask extends Task {
 
-    private final Validators VALIDATORS = new Validators();
-    private final Summoner BOT = (Summoner) Environment.getBot();
-    private final Coordinate[] PATH_TO_OBELISK = {new Coordinate(2884, 3418), new Coordinate(2896, 3415), new Coordinate(2909, 3418), new Coordinate(2920, 3425), new Coordinate(2923, 3439), new Coordinate(2930, 3448)};
+    private final Validators validators = new Validators();
+    private final Summoner bot = (Summoner) Environment.getBot();
+    private final Coordinate[] pathToObelisk = {new Coordinate(2884, 3418), new Coordinate(2896, 3415), new Coordinate(2909, 3418), new Coordinate(2920, 3425), new Coordinate(2923, 3439), new Coordinate(2930, 3448)};
+    private final Coordinate[] pathToObelisk2 = {new Coordinate(2889, 3414), new Coordinate(2903, 3415), new Coordinate(2915, 3423), new Coordinate(2922, 3435), new Coordinate(2927, 3448)};
+    private final Coordinate[][] paths = {pathToObelisk, pathToObelisk2};
+    //private WebPath pathToObelisk;
 
     @Override
     public boolean validate() {
-        return VALIDATORS.isInfuse();
+        return validators.isInfuse();
     }
 
     @Override
@@ -32,7 +36,7 @@ public class InfuseTask extends Task {
             Execution.delayUntil(() -> !MakeXInterface.isOpen(), 2500);
 
             if (MakeXInterface.isOpen()) {
-                BOT.stop();
+                bot.stop();
             }
 
         } else {
@@ -43,16 +47,28 @@ public class InfuseTask extends Task {
                 if (obelisk.click()) {
                     Execution.delayUntil(() -> MakeXInterface.isOpen(), 15000);
 
-                    if (!MakeXInterface.isOpen()) {
-                        BOT.stop();
-                    }
+                    /*if (!MakeXInterface.isOpen()) {
+                        bot.stop();
+                    }*/
 
                 } else {
                     Camera.turnTo(obelisk);
                 }
 
             } else {
-                Utils.smartWalk(PATH_TO_OBELISK);
+
+                /*if (pathToObelisk == null || pathToObelisk.getNext() == null) {
+                    pathToObelisk = Traversal.getDefaultWeb().getPathBuilder().buildTo(new Coordinate(2930, 3448));
+                }
+
+                if (pathToObelisk != null) {
+                    pathToObelisk.step();
+
+                } else {
+                    throw new IllegalStateException("Can not generate walking path");
+                }*/
+
+                Utils.smartWalk(paths[Random.nextInt(paths.length)]);
                 Player player = Players.getLocal();
                 Execution.delayUntil(() -> !player.isMoving(), 1000, 8000);
             }

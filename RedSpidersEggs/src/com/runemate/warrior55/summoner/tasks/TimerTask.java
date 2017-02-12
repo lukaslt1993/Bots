@@ -7,17 +7,17 @@ import com.runemate.warrior55.summoner.main.Summoner;
 
 public class TimerTask extends Task {
    
-     private final Summoner BOT = (Summoner) Environment.getBot();
-     private final Timer TIMER = BOT.TIMER;
+     private final Summoner bot = (Summoner) Environment.getBot();
+     private final Timer timer = bot.timer;
 
     @Override
     public boolean validate() { 
-        Summoner.totalUsage += TIMER.getElapsedTime();
-        return Summoner.totalUsage >= 10800000 && BOT.getMetaData().getHourlyPrice().doubleValue() <= 0 && BOT.getType().equals("Spawn");
+        Summoner.totalUsage += timer.getElapsedTime();
+        return Summoner.totalUsage >= 10800000 && bot.getMetaData().getHourlyPrice().doubleValue() <= 0 && bot.getType().equals("Spawn");
     }
 
     @Override
     public void execute() {
-        BOT.stop();
+        bot.stop();
     }
 }

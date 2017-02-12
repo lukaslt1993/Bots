@@ -11,11 +11,11 @@ import com.runemate.game.api.script.framework.task.Task;
 
 public class SummonKyattTask extends Task {
     
-    private final Validators VALIDATORS = new Validators();
+    private final Validators validators = new Validators();
     
     @Override
     public boolean validate() {
-        return VALIDATORS.isSummonKyatt();
+        return validators.isSummonKyatt();
     }
     
     @Override
