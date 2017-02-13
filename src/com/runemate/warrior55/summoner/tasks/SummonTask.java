@@ -1,7 +1,6 @@
 
 package com.runemate.warrior55.summoner.tasks;
 
-import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.local.hud.interfaces.ChatDialog;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.local.hud.interfaces.SpriteItem;
@@ -13,9 +12,14 @@ import com.runemate.warrior55.summoner.main.Summoner;
 
 public class SummonTask extends Task {
     
-    private final Validators validators = new Validators();
+    private final Validators validators;
+   
+    private final Summoner bot ;
     
-    private final Summoner bot = (Summoner) Environment.getBot();
+    public SummonTask(Summoner s) {
+        bot = s;
+        validators = new Validators(bot);
+    }
     
     @Override
     public boolean validate() {

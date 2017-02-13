@@ -1,7 +1,6 @@
 
 package com.runemate.warrior55.summoner.tasks;
 
-import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.entities.Npc;
 import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
@@ -13,12 +12,19 @@ import com.runemate.game.api.rs3.local.hud.interfaces.Summoning;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionBar;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
+import com.runemate.warrior55.summoner.main.Summoner;
 import com.runemate.warrior55.summoner.tasks.common.Constants;
 import com.runemate.warrior55.summoner.tasks.common.Utils;
 
 public class BankBarbarianTask extends Task {
     
-    private final Validators validators = new Validators();
+    private final Validators validators;
+    private final Summoner bot;
+    
+    public BankBarbarianTask(Summoner s) {
+        bot = s;
+        validators = new Validators(bot);
+    }
 
     @Override
     public boolean validate() {
@@ -49,7 +55,7 @@ public class BankBarbarianTask extends Task {
             SpriteItemQueryResults pouches = Bank.getItems("Spirit kyatt pouch");
 
             if (pouches.isEmpty()) {
-                Environment.getBot().stop();
+                bot.stop();
 
             } else {
                 Utils.loadPresetAndWait(2);    

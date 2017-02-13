@@ -1,6 +1,5 @@
 package com.runemate.warrior55.summoner.tasks;
 
-import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.entities.GroundItem;
 import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
@@ -17,9 +16,13 @@ public class PickTask extends Task {
 
     private int failedPicksCounter = 0;
 
-    private final Validators validators = new Validators();
-
-    private final Summoner bot = (Summoner) Environment.getBot();
+    private final Validators validators;
+    private final Summoner bot;
+    
+    public PickTask(Summoner s) {
+        bot = s;
+        validators = new Validators(bot);
+    }
 
     @Override
     public boolean validate() {
@@ -69,7 +72,7 @@ public class PickTask extends Task {
                 Utils.walk(loot.getPosition());
 
             } else {
-                throw new RuntimeException("Didn't get the coordinate of drop, so stopped");
+                throw new RuntimeException("Didn't get the coordinate of drop, so stopped; bot was running? - " + bot.isRunning());
             }
         }
 

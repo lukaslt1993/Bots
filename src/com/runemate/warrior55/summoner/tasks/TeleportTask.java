@@ -8,11 +8,18 @@ import com.runemate.game.api.rs3.local.hud.interfaces.Summoning;
 import com.runemate.game.api.rs3.local.hud.interfaces.Summoning.FamiliarOption;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
+import com.runemate.warrior55.summoner.main.Summoner;
 import com.runemate.warrior55.summoner.tasks.common.Constants;
 
 public class TeleportTask extends Task {
     
-    private final Validators validators = new Validators();
+    private final Summoner bot;
+    private final Validators validators;
+    
+    public TeleportTask(Summoner s) {
+        bot = s;
+        validators = new Validators(bot);
+    }
     
     @Override
     public boolean validate() {

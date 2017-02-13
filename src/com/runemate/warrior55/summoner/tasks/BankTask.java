@@ -1,6 +1,5 @@
 package com.runemate.warrior55.summoner.tasks;
 
-import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.entities.GameObject;
 import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
@@ -17,15 +16,23 @@ import com.runemate.warrior55.summoner.tasks.common.Utils;
 
 public class BankTask extends Task {
 
-    private final Summoner bot = (Summoner) Environment.getBot();
+    private final Summoner bot;
 
-    private String scrollName = bot.getScrollName();
+    private final String scrollName;
 
-    private String pouchName = bot.getPouchName();
+    private final String pouchName;
 
-    private final String[] itemToKeepNames = new String[]{"Summoning potion (4)", "Summoning potion (3)", "Summoning potion (2)", "Summoning potion (1)", scrollName};
+    private final String[] itemToKeepNames;
 
-    private final Validators validators = new Validators();
+    private final Validators validators;
+    
+    public BankTask(Summoner s) {
+        bot = s;
+        validators = new Validators(bot);
+        scrollName = bot.getScrollName();
+        pouchName = bot.getPouchName();
+        itemToKeepNames = new String[]{"Summoning potion (4)", "Summoning potion (3)", "Summoning potion (2)", "Summoning potion (1)", scrollName};
+    }
 
     @Override
     public boolean validate() {
@@ -35,7 +42,7 @@ public class BankTask extends Task {
     @Override
     public void execute() {
         if (Bank.isOpen() || openBank()) {
-            setFields();
+            //setFields();
 
             if (bot.isUsingPresets()) {
                 withdrawPreset();
@@ -84,7 +91,7 @@ public class BankTask extends Task {
             SpriteItemQueryResults scrolls = Bank.getItems(scrollName);
 
             if (scrolls.isEmpty()) {
-                Environment.getBot().stop();
+                bot.stop();
 
             } else {
                 return Bank.withdraw(scrolls.first(), 0);
@@ -100,7 +107,7 @@ public class BankTask extends Task {
         if (pots.isEmpty()) {
 
             if (Summoning.getPoints() < 1) {
-                Environment.getBot().stop();
+                bot.stop();
             }
 
         } else if (!Inventory.containsAnyOf(Constants.POTION_NAMES[0], Constants.POTION_NAMES[1])) {
@@ -118,7 +125,7 @@ public class BankTask extends Task {
                 return Bank.withdraw(pouches.first(), 1);
 
             } else {
-                Environment.getBot().stop();
+                bot.stop();
             }
         }
 
@@ -130,7 +137,7 @@ public class BankTask extends Task {
             SpriteItemQueryResults eggs = Bank.getItems("Egg");
 
             if (eggs.isEmpty()) {
-                Environment.getBot().stop();
+                bot.stop();
 
             } else {
                 return Bank.withdraw(eggs.first(), 0);
@@ -141,24 +148,34 @@ public class BankTask extends Task {
     }
 
     private void withdrawPreset() {
-        if (Players.getLocal().getFamiliar() == null && !Inventory.containsAnyOf(pouchName)) {
+        if (Players.getLocal().getFamiliar() == null || Summoning.getMinutesRemaining() < 1) {
             SpriteItemQueryResults pouches = Bank.getItems(pouchName);
 
             if (!pouches.isEmpty()) {
-                Bank.loadPreset(2, true);
+                loadPresetAndWait(2);
 
             } else {
-                Environment.getBot().stop();
+                bot.stop();
             }
 
         } else {
-            Bank.loadPreset(1, true);
+            loadPresetAndWait(1);
         }
     }
+    
+    private void loadPresetAndWait(int preset) {
+        if (Bank.loadPreset(preset, false)) {
+            Execution.delayUntil(() -> !validate(), 5000);
 
-    private void setFields() {
+            if (validate()) {
+                bot.stop();
+            }
+        }
+    }
+    
+    /*private void setFields() {
         scrollName = bot.getScrollName();
         pouchName = bot.getPouchName();
         itemToKeepNames[4] = scrollName;
-    }
+    }*/
 }

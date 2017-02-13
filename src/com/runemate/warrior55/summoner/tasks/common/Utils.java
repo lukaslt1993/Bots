@@ -13,31 +13,35 @@ import com.runemate.warrior55.summoner.main.Summoner;
 public class Utils {
 
     public static void walk(Coordinate c) {
-        Coordinate currentCoord = Players.getLocal().getPosition();
+        Summoner bot = (Summoner) Environment.getBot();
 
-        if (currentCoord.getX() == c.getX() && currentCoord.getY() == c.getY()) {
-            return;
-        }
+        if (bot != null && bot.isRunning()) {
+            Coordinate currentCoord = Players.getLocal().getPosition();
 
-        BresenhamPath path = BresenhamPath.buildTo(c);
-
-        if (path != null) {
-            path.step();
-
-        } else if (((Summoner) Environment.getBot()).getType().equals("Spawn")) {
-            BresenhamPath bankPath = BresenhamPath.buildTo(Constants.BANK_COORD);
-
-            if (bankPath != null) {
-                bankPath.step();
-
-            } else {
-                throw new IllegalStateException("Can not generate walking path");
-                //Environment.getBot().stop();
+            if (currentCoord.getX() == c.getX() && currentCoord.getY() == c.getY()) {
+                return;
             }
 
-        } else {
-            throw new IllegalStateException("Can not generate walking path");
-            //Environment.getBot().stop();
+            BresenhamPath path = BresenhamPath.buildTo(c);
+
+            if (path != null) {
+                path.step();
+
+            } else if (bot.getType().equals("Spawn")) {
+                BresenhamPath bankPath = BresenhamPath.buildTo(Constants.BANK_COORD);
+
+                if (bankPath != null) {
+                    bankPath.step();
+
+                } else {
+                    throw new IllegalStateException("Can not generate walking path; bot was running? - " + bot.isRunning());
+                    //Environment.getBot().stop();
+                }
+
+            } else {
+                throw new IllegalStateException("Can not generate walking path; bot was running? - " + bot.isRunning());
+                //Environment.getBot().stop();
+            }
         }
     }
 
@@ -47,7 +51,9 @@ public class Utils {
         for (int i = 0; i < c.length; i++) {
 
             if (!Execution.delayUntil(() -> path.step(), 8000)) {
-                Environment.getBot().stop();
+                
+                
+                checkNotRunningOrStop();
             }
         }
     }
@@ -57,13 +63,21 @@ public class Utils {
             Execution.delayUntil(() -> isLoaded(), 5000);
 
             if (!isLoaded()) {
-                Environment.getBot().stop();
+                checkNotRunningOrStop();
             }
         }
     }
 
-    public static boolean isLoaded() {
+    private static boolean isLoaded() {
         return Inventory.getItems(Constants.SUMM_STUFF).size() == 3
                 || Inventory.getItems(Constants.POUCH_PATTERN).size() >= 27;
+    }
+
+    private static void checkNotRunningOrStop() {
+        Summoner bot = (Summoner) Environment.getBot();
+
+        if (bot != null && bot.isRunning()) {
+            bot.stop();
+        }
     }
 }
