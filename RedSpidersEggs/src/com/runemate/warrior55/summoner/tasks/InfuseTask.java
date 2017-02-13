@@ -1,6 +1,5 @@
 package com.runemate.warrior55.summoner.tasks;
 
-import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.entities.GameObject;
 import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.input.Keyboard;
@@ -17,12 +16,17 @@ import com.runemate.warrior55.summoner.tasks.common.Utils;
 
 public class InfuseTask extends Task {
 
-    private final Validators validators = new Validators();
-    private final Summoner bot = (Summoner) Environment.getBot();
+    private final Validators validators;
+    private final Summoner bot;
     private final Coordinate[] pathToObelisk = {new Coordinate(2884, 3418), new Coordinate(2896, 3415), new Coordinate(2909, 3418), new Coordinate(2920, 3425), new Coordinate(2923, 3439), new Coordinate(2930, 3448)};
     private final Coordinate[] pathToObelisk2 = {new Coordinate(2889, 3414), new Coordinate(2903, 3415), new Coordinate(2915, 3423), new Coordinate(2922, 3435), new Coordinate(2927, 3448)};
     private final Coordinate[][] paths = {pathToObelisk, pathToObelisk2};
     //private WebPath pathToObelisk;
+    
+    public InfuseTask(Summoner s) {
+        bot = s;
+        validators = new Validators(bot);
+    }
 
     @Override
     public boolean validate() {

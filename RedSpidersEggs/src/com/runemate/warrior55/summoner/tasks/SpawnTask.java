@@ -1,6 +1,5 @@
 package com.runemate.warrior55.summoner.tasks;
 
-import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.queries.results.SpriteItemQueryResults;
 import com.runemate.game.api.hybrid.region.Players;
@@ -13,9 +12,14 @@ import com.runemate.warrior55.summoner.tasks.common.Utils;
 
 public class SpawnTask extends Task {
 
-    private final Summoner bot = (Summoner) Environment.getBot();
+    private final Summoner bot;
 
-    private final Validators validators = new Validators();
+    private final Validators validators;
+    
+    public SpawnTask(Summoner s) {
+        bot = s;
+        validators = new Validators(bot);
+    }
 
     @Override
     public boolean validate() {
@@ -29,6 +33,9 @@ public class SpawnTask extends Task {
         
         if (firstSlot != null) {
             firstSlot.activate(false);
+            
+        } else {
+            bot.stop();
         }
         
         if (!bot.getPouchName().equals("Spirit cobra pouch")) {

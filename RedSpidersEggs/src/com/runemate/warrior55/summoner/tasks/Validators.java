@@ -1,6 +1,5 @@
 package com.runemate.warrior55.summoner.tasks;
 
-import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.entities.GameObject;
 import com.runemate.game.api.hybrid.entities.GroundItem;
 import com.runemate.game.api.hybrid.entities.Player;
@@ -18,7 +17,11 @@ import com.runemate.warrior55.summoner.tasks.common.Constants;
 
 class Validators {
 
-    private final Summoner bot = (Summoner) Environment.getBot();
+    private final Summoner bot;
+    
+    Validators(Summoner s) {
+        bot = s;   
+    }
 
     boolean isBank() {
         if (bot.getType().equals("Spawn")) {
@@ -119,12 +122,13 @@ class Validators {
         int pouchesCount = Inventory.getItems(Constants.POUCH_PATTERN).size();
         int sumStuffCount = Inventory.getItems(Constants.SUMM_STUFF).size();
         return player != null
-                && bot.getType().equals("Summon")
+                && (bot.getType().equals("Summon")
                 && bot.getSummonMethod().equals("Ring of Kinship")
                 && player.distanceTo(Constants.TRAP_DOOR_COORD) > 800
-                && !(Summoning.getMinutesRemaining() <= 0 && Inventory.containsAnyOf("Spirit kyatt pouch"))
                 && pouchesCount < 27
-                && !(pouchesCount <= 0 && sumStuffCount == 3);
+                && !(pouchesCount <= 0 && sumStuffCount == 3))
+                || Summoning.getMinutesRemaining() <= 0
+                && !Inventory.containsAnyOf("Spirit kyatt pouch");
     }
     
     boolean isBankTaverley() {
