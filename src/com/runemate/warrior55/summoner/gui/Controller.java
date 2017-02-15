@@ -160,31 +160,7 @@ public class Controller implements Initializable {
             }
 
             startButton.setDisable(true);
-            bot.setLoopDelay(25, 50);
-            bot.add(new BankTask(bot), new PickTask(bot), new RestoreTask(bot), new SpawnTask(bot), new SummonTask(bot), new TeleportTask(bot), new InteractTrapDoorTask(bot), new InfuseTask(bot), new BankBarbarianTask(bot), new SummonKyattTask(bot), new BankTaverleyTask(bot));
-
-            try {
-                URLConnection connection = new URL("http://warrior55.byethost12.com/?id=" + Environment.getForumId()).openConnection();
-                // to treat JAVA like normal browser
-                connection.addRequestProperty("Cookie", "__test=" + bot.getCookie());
-                InputStream response = connection.getInputStream();
-                Scanner scanner = new Scanner(response);
-                Summoner.playedToday = scanner.nextLong();
-            } catch (Throwable t) {
-
-            }
-
-            bot.runtime.start();
-
-            new LoopingThread(() -> {
-                Summoner.playedToday += bot.runtime.getRuntime();
-
-                if (Summoner.playedToday > TimeUnit.HOURS.toMillis(3) && bot.getMetaData().getHourlyPrice().doubleValue() <= 0 && bot.getType().equals("Spawn")) {
-                    System.err.println("[UsageMonitor] Looks like you've used your 3 free hours today!");
-                    bot.stop();
-                }
-
-            }, (int) TimeUnit.SECONDS.toMillis(3)).start();
+            bot.canContinue.set(true);
 
             /*if (bot.isPaused()) {
                 bot.resume();

@@ -10,6 +10,7 @@ import com.runemate.game.api.hybrid.queries.results.LocatableEntityQueryResults;
 import com.runemate.game.api.hybrid.region.GameObjects;
 import com.runemate.game.api.hybrid.region.GroundItems;
 import com.runemate.game.api.hybrid.region.Players;
+import com.runemate.game.api.hybrid.util.Timer;
 import com.runemate.game.api.rs3.local.hud.interfaces.MakeXInterface;
 import com.runemate.game.api.rs3.local.hud.interfaces.Summoning;
 import com.runemate.warrior55.summoner.main.Summoner;
@@ -18,6 +19,7 @@ import com.runemate.warrior55.summoner.tasks.common.Constants;
 class Validators {
 
     private final Summoner bot;
+    private final Timer timer = new Timer(50000);
     
     Validators(Summoner s) {
         bot = s;   
@@ -49,8 +51,15 @@ class Validators {
                 bot.setAllLoot(GroundItems.newQuery().names(s).results());
 
                 if (bot.isLootAll()) {
+                    long time = timer.getElapsedTime();
+                    
+                    if (time == 0 || time == 50000) {
+                        timer.reset();
+                        timer.start();
+                    }
+    
                     LocatableEntityQueryResults<GroundItem> leqr = bot.getAllLoot();
-                    return !leqr.isEmpty() && leqr.size() >= Inventory.getEmptySlots() && !isBank();
+                    return !leqr.isEmpty() && (leqr.size() >= Inventory.getEmptySlots() || time == 50000) && !isBank();
 
                 } else {
                     bot.setLoot(bot.getAllLoot().first());
