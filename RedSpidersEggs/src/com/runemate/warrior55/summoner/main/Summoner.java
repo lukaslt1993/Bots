@@ -6,12 +6,30 @@ import com.runemate.game.api.hybrid.entities.GroundItem;
 import com.runemate.game.api.hybrid.queries.results.LocatableEntityQueryResults;
 import com.runemate.game.api.hybrid.util.Resources;
 import com.runemate.game.api.hybrid.util.StopWatch;
+import com.runemate.game.api.script.Execution;
+import com.runemate.game.api.script.framework.core.LoopingThread;
 import com.runemate.game.api.script.framework.task.TaskBot;
 import com.runemate.warrior55.summoner.gui.Controller;
+import com.runemate.warrior55.summoner.tasks.BankBarbarianTask;
+import com.runemate.warrior55.summoner.tasks.BankTask;
+import com.runemate.warrior55.summoner.tasks.BankTaverleyTask;
+import com.runemate.warrior55.summoner.tasks.InfuseTask;
+import com.runemate.warrior55.summoner.tasks.InteractTrapDoorTask;
+import com.runemate.warrior55.summoner.tasks.PickTask;
+import com.runemate.warrior55.summoner.tasks.RestoreTask;
+import com.runemate.warrior55.summoner.tasks.SpawnTask;
+import com.runemate.warrior55.summoner.tasks.SummonKyattTask;
+import com.runemate.warrior55.summoner.tasks.SummonTask;
+import com.runemate.warrior55.summoner.tasks.TeleportTask;
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
@@ -41,9 +59,13 @@ public class Summoner extends TaskBot implements EmbeddableUI {
 
     private String summonMethod;
 
-    public static long playedToday = 0;
+    public static AtomicLong playedToday = new AtomicLong();
+    
+    public final AtomicBoolean canContinue = new AtomicBoolean();
 
     public final StopWatch runtime = new StopWatch();
+    
+    private long oldRuntime = 0;
 
     private ObjectProperty<Node> botInterfaceProperty;
 
@@ -147,10 +169,39 @@ public class Summoner extends TaskBot implements EmbeddableUI {
         return botInterfaceProperty;
     }
 
-    /*@Override
+    @Override
     public void onStart(String... args) {
-        pause();
-    }*/
+        //pause();
+        Execution.delayUntil(() -> canContinue.get());
+        setLoopDelay(25, 50);
+        add(new BankTask(this), new PickTask(this), new RestoreTask(this), new SpawnTask(this), new SummonTask(this), new TeleportTask(this), new InteractTrapDoorTask(this), new InfuseTask(this), new BankBarbarianTask(this), new SummonKyattTask(this), new BankTaverleyTask(this));
+
+        try {
+            URLConnection connection = new URL("http://warrior55.byethost12.com/?id=" + Environment.getForumId()).openConnection();
+            // to treat JAVA like normal browser
+            connection.addRequestProperty("Cookie", "__test=" + getCookie());
+            InputStream response = connection.getInputStream();
+            Scanner scanner = new Scanner(response);
+            playedToday.set(scanner.nextLong());
+        } catch (Throwable t) {
+
+        }
+
+        runtime.start();
+        
+        new LoopingThread(() -> {
+            
+            long currentRuntime = runtime.getRuntime(); 
+            playedToday.set(playedToday.get() + currentRuntime - oldRuntime);
+            oldRuntime = currentRuntime;
+
+            if (playedToday.get() > TimeUnit.HOURS.toMillis(3) && getMetaData().getHourlyPrice().doubleValue() <= 0 && getType().equals("Spawn")) {
+                System.err.println("[UsageMonitor] Looks like you've used your 3 free hours today!");
+                stop();
+            }
+
+        }, (int) TimeUnit.SECONDS.toMillis(3)).start();
+    }
 
     @Override
     public void onPause() {
@@ -176,7 +227,7 @@ public class Summoner extends TaskBot implements EmbeddableUI {
             throw new RuntimeException(t);
         }
     }
-    
+
     private String readURL(URL url) throws Exception {
         URLConnection connection = url.openConnection();
         BufferedReader in = new BufferedReader(
@@ -205,7 +256,7 @@ public class Summoner extends TaskBot implements EmbeddableUI {
         return content.substring(content.indexOf("<script>") + 8, content.indexOf("document.cookie="));
     }
 
-    public String getCookie() throws Exception {
+    private String getCookie() throws Exception {
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName("js");
         return (String) engine.eval(getDecryptor() + getEncryptor() + "toHex(slowAES.decrypt(c,2,a,b));");
