@@ -1,4 +1,4 @@
-<manifest>
+<!--manifest>
     <main-class>com.runemate.warrior55.spawner.main.EggSpawner</main-class>
     <name>Cash summoner</name>
     <tag-line>Which came first, the spider or the egg?</tag-line>
@@ -30,4 +30,4 @@
     <resources>
         <resource>com/runemate/warrior55/spawner/gui/GUI.fxml</resource>
     </resources>
-</manifest>
+</manifest-->
