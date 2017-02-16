@@ -46,24 +46,32 @@ public class Utils {
     }
 
     public static void smartWalk(Coordinate[] c) {
-        PredefinedPath path = PredefinedPath.create(c);
+        Summoner bot = (Summoner) Environment.getBot();
 
-        for (int i = 0; i < c.length; i++) {
+        if (bot != null && bot.isRunning()) {
+            PredefinedPath path = PredefinedPath.create(c);
 
-            if (!Execution.delayUntil(() -> path.step(), 8000)) {
-                
-                
-                checkNotRunningOrStop();
+            for (int i = 0; i < c.length; i++) {
+
+                if (!Execution.delayUntil(() -> path.step(), 8000)) {
+                    bot.showAndLogAlert("Can not walk, maybe started in wrong place");
+                    bot.stop();
+                }
             }
         }
     }
 
     public static void loadPresetAndWait(int preset) {
-        if (Bank.loadPreset(preset, false)) {
-            Execution.delayUntil(() -> isLoaded(), 5000);
+        Summoner bot = (Summoner) Environment.getBot();
 
-            if (!isLoaded()) {
-                checkNotRunningOrStop();
+        if (bot != null && bot.isRunning()) {
+            if (Bank.loadPreset(preset, false)) {
+                Execution.delayUntil(() -> isLoaded(), 5000);
+
+                if (!isLoaded()) {
+                    bot.showAndLogAlert("Out of stuff");
+                    bot.stop();
+                }
             }
         }
     }
@@ -71,13 +79,5 @@ public class Utils {
     private static boolean isLoaded() {
         return Inventory.getItems(Constants.SUMM_STUFF).size() == 3
                 || Inventory.getItems(Constants.POUCH_PATTERN).size() >= 27;
-    }
-
-    private static void checkNotRunningOrStop() {
-        Summoner bot = (Summoner) Environment.getBot();
-
-        if (bot != null && bot.isRunning()) {
-            bot.stop();
-        }
     }
 }

@@ -40,6 +40,7 @@ public class InfuseTask extends Task {
             Execution.delayUntil(() -> !MakeXInterface.isOpen(), 2500);
 
             if (MakeXInterface.isOpen()) {
+                bot.showAndLogAlert("Failed to infuse, maybe out of stuff");
                 bot.stop();
             }
 

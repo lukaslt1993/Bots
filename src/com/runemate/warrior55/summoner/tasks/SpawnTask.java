@@ -35,6 +35,7 @@ public class SpawnTask extends Task {
             firstSlot.activate(false);
             
         } else {
+            bot.showAndLogAlert("Can not get first action bar slot, maybe empty");
             bot.stop();
         }
         

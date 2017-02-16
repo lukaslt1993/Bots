@@ -131,13 +131,13 @@ class Validators {
         int pouchesCount = Inventory.getItems(Constants.POUCH_PATTERN).size();
         int sumStuffCount = Inventory.getItems(Constants.SUMM_STUFF).size();
         return player != null
-                && (bot.getType().equals("Summon")
+                && bot.getType().equals("Summon")
                 && bot.getSummonMethod().equals("Ring of Kinship")
-                && player.distanceTo(Constants.TRAP_DOOR_COORD) > 800
+                && (player.distanceTo(Constants.TRAP_DOOR_COORD) > 800
                 && pouchesCount < 27
-                && !(pouchesCount <= 0 && sumStuffCount == 3))
+                && !(pouchesCount <= 0 && sumStuffCount == 3)
                 || Summoning.getMinutesRemaining() <= 0
-                && !Inventory.containsAnyOf("Spirit kyatt pouch");
+                && !Inventory.containsAnyOf("Spirit kyatt pouch"));
     }
     
     boolean isBankTaverley() {
