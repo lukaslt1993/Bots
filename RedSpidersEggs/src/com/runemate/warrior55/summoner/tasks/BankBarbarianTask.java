@@ -55,6 +55,7 @@ public class BankBarbarianTask extends Task {
             SpriteItemQueryResults pouches = Bank.getItems("Spirit kyatt pouch");
 
             if (pouches.isEmpty()) {
+                bot.showAndLogAlert("Out of pouches to summon spirit kyatt");
                 bot.stop();
 
             } else {

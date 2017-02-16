@@ -91,6 +91,7 @@ public class BankTask extends Task {
             SpriteItemQueryResults scrolls = Bank.getItems(scrollName);
 
             if (scrolls.isEmpty()) {
+                bot.showAndLogAlert("Out of scrolls");
                 bot.stop();
 
             } else {
@@ -107,6 +108,7 @@ public class BankTask extends Task {
         if (pots.isEmpty()) {
 
             if (Summoning.getPoints() < 1) {
+                bot.showAndLogAlert("Out of summoning potions and points");
                 bot.stop();
             }
 
@@ -125,6 +127,7 @@ public class BankTask extends Task {
                 return Bank.withdraw(pouches.first(), 1);
 
             } else {
+                bot.showAndLogAlert("Out of pouches");
                 bot.stop();
             }
         }
@@ -137,6 +140,7 @@ public class BankTask extends Task {
             SpriteItemQueryResults eggs = Bank.getItems("Egg");
 
             if (eggs.isEmpty()) {
+                bot.showAndLogAlert("Out of eggs");
                 bot.stop();
 
             } else {
@@ -155,6 +159,7 @@ public class BankTask extends Task {
                 loadPresetAndWait(2);
 
             } else {
+                bot.showAndLogAlert("Out of pouches");
                 bot.stop();
             }
 
@@ -168,6 +173,7 @@ public class BankTask extends Task {
             Execution.delayUntil(() -> !validate(), 5000);
 
             if (validate()) {
+                bot.showAndLogAlert("Out of stuff");
                 bot.stop();
             }
         }

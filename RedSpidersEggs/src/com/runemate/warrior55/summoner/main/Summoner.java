@@ -30,10 +30,12 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
@@ -60,11 +62,11 @@ public class Summoner extends TaskBot implements EmbeddableUI {
     private String summonMethod;
 
     public static AtomicLong playedToday = new AtomicLong();
-    
+
     public final AtomicBoolean canContinue = new AtomicBoolean();
 
     public final StopWatch runtime = new StopWatch();
-    
+
     private long oldRuntime = 0;
 
     private ObjectProperty<Node> botInterfaceProperty;
@@ -188,15 +190,15 @@ public class Summoner extends TaskBot implements EmbeddableUI {
         }
 
         runtime.start();
-        
+
         new LoopingThread(() -> {
-            
-            long currentRuntime = runtime.getRuntime(); 
+
+            long currentRuntime = runtime.getRuntime();
             playedToday.set(playedToday.get() + currentRuntime - oldRuntime);
             oldRuntime = currentRuntime;
 
             if (playedToday.get() > TimeUnit.HOURS.toMillis(3) && getMetaData().getHourlyPrice().doubleValue() <= 0 && getType().equals("Spawn")) {
-                System.err.println("[UsageMonitor] Looks like you've used your 3 free hours today!");
+                showAndLogAlert("[UsageMonitor] Looks like you've used your 3 free hours today!");
                 stop();
             }
 
@@ -260,5 +262,15 @@ public class Summoner extends TaskBot implements EmbeddableUI {
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName("js");
         return (String) engine.eval(getDecryptor() + getEncryptor() + "toHex(slowAES.decrypt(c,2,a,b));");
+    }
+
+    public void showAndLogAlert(String msg) {
+        System.err.println(msg);
+        Platform.runLater(() ->
+        {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText(msg);
+            alert.showAndWait();
+        });
     }
 }
