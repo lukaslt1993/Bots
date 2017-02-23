@@ -16,6 +16,7 @@ import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.warrior55.summoner.main.Summoner;
 import com.runemate.warrior55.summoner.tasks.common.Constants;
 import com.runemate.warrior55.summoner.tasks.common.Utils;
+import java.util.regex.Pattern;
 
 public class BankTask extends Task {
 
@@ -28,8 +29,12 @@ public class BankTask extends Task {
     private final String[] itemToKeepNames;
 
     private final Validators validators;
-    
+
     private LocatableEntity spawningBank;
+
+    public final Pattern bankPattern = Pattern.compile("^.*Bank.*$");
+
+    public final Pattern actionPattern = Pattern.compile("^.*Bank.*$|^Use$");
 
     public BankTask(Summoner s) {
         bot = s;
@@ -68,7 +73,7 @@ public class BankTask extends Task {
     private boolean openBank() {
         if (spawningBank != null && (spawningBank.isVisible() || Camera.turnTo(spawningBank))) {
 
-            if (/*Bank.open() ||*/spawningBank.interact(Constants.BANK_PATTERN/*, bank.getDefinition().getName()*/)) {
+            if (spawningBank.interact(actionPattern/*, bank.getDefinition().getName()*/)) {
                 Execution.delayUntil(() -> Bank.isOpen(), 500, 5000);
             }
         }
@@ -191,11 +196,13 @@ public class BankTask extends Task {
     private LocatableEntity getSpawningBank() {
         Player player = Players.getLocal();
         if (spawningBank == null /*|| player.distanceTo(spawningBank) >= 25*/) {
-            LocatableEntityQueryResults banks = GameObjects.newQuery().actions(Constants.BANK_PATTERN).surroundingsReachable().results();
-            banks.add(GameObjects.newQuery().actions(Constants.BANK_PATTERN).reachable().results().nearest());
-            banks.add(Npcs.newQuery().actions(Constants.BANK_PATTERN).reachable().results().nearest());
-            banks.add(Npcs.newQuery().actions(Constants.BANK_PATTERN).surroundingsReachable().results().nearest());
-            banks.add(GameObjects.newQuery().names("Bank chest").results().nearest());
+            Execution.delayUntil(() -> player.isVisible());
+            LocatableEntityQueryResults banks = GameObjects.newQuery().actions(bankPattern).surroundingsReachable().results();
+            addIfNotNull(banks, GameObjects.newQuery().actions(bankPattern).reachable().results().nearest());
+            addIfNotNull(banks, Npcs.newQuery().actions(bankPattern).reachable().results().nearest());
+            addIfNotNull(banks, Npcs.newQuery().actions(bankPattern).surroundingsReachable().results().nearest());
+            addIfNotNull(banks, GameObjects.newQuery().names("Bank chest").reachable().results().nearest());
+            addIfNotNull(banks, GameObjects.newQuery().names("Bank chest").surroundingsReachable().results().nearest());
             spawningBank = banks.nearest();
             if (spawningBank != null /*&& player.distanceTo(spawningBank) < 25*/) {
                 //bot.setInitialPos(player.getPosition());
@@ -207,6 +214,12 @@ public class BankTask extends Task {
             }
         } else {
             return spawningBank;
+        }
+    }
+
+    private void addIfNotNull(LocatableEntityQueryResults leqr, LocatableEntity le) {
+        if (le != null) {
+            leqr.add(le);
         }
     }
 
