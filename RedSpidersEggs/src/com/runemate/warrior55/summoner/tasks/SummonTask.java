@@ -39,6 +39,7 @@ public class SummonTask extends Task {
         if (pouch != null && pouch.click()) {
             Execution.delayWhile(() -> validate(), 5000);
             // Strangely, special move from action bar stops working after resummon. This toggle fixes it.
+            // TODO: maybe still needed to check if toggled after 20 sec
             Execution.delayUntil(() -> ActionBar.toggleLock(), 20000);
         }     
     }    

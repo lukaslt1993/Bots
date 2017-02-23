@@ -10,7 +10,9 @@ public class Constants {
         "Summoning potion (4)", "Summoning potion (3)",
         "Summoning potion (2)", "Summoning potion (1)"};
     
-    public static final Coordinate BANK_COORD = new Coordinate(3164, 3454);
+    //public static final Coordinate BANK_COORD = new Coordinate(3164, 3454);
+    
+    public static final Pattern BANK_PATTERN = Pattern.compile("^.*Bank.*$|^Use$");
     
     public static final Coordinate BARBARIAN_BANK_COORD = new Coordinate(3449, 3719);
     

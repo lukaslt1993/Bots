@@ -1,6 +1,5 @@
 package com.runemate.warrior55.summoner.tasks.common;
 
-import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.location.Coordinate;
@@ -12,8 +11,8 @@ import com.runemate.warrior55.summoner.main.Summoner;
 
 public class Utils {
 
-    public static void walk(Coordinate c) {
-        Summoner bot = (Summoner) Environment.getBot();
+    public static void walk(Coordinate c, Summoner bot) {
+        //Summoner bot = (Summoner) Environment.getBot();
 
         if (bot != null && bot.isRunning()) {
             Coordinate currentCoord = Players.getLocal().getPosition();
@@ -27,26 +26,26 @@ public class Utils {
             if (path != null) {
                 path.step();
 
-            } else if (bot.getType().equals("Spawn")) {
-                BresenhamPath bankPath = BresenhamPath.buildTo(Constants.BANK_COORD);
+            } /*else if (bot.getType().equals("Spawn")) {
+             BresenhamPath bankPath = BresenhamPath.buildTo(getSpawningBankCoord(bot));
 
-                if (bankPath != null) {
-                    bankPath.step();
+             if (bankPath != null) {
+             bankPath.step();
 
-                } else {
-                    throw new IllegalStateException("Can not generate walking path; bot was running? - " + bot.isRunning());
-                    //Environment.getBot().stop();
-                }
+             } else {
+             throw new IllegalStateException("Can not generate walking path; bot was running? - " + bot.isRunning());
+             //Environment.getBot().stop();
+             }
 
-            } else {
+             }*/ else {
                 throw new IllegalStateException("Can not generate walking path; bot was running? - " + bot.isRunning());
                 //Environment.getBot().stop();
             }
         }
     }
 
-    public static void smartWalk(Coordinate[] c) {
-        Summoner bot = (Summoner) Environment.getBot();
+    public static void smartWalk(Coordinate[] c, Summoner bot) {
+        //Summoner bot = (Summoner) Environment.getBot();
 
         if (bot != null && bot.isRunning()) {
             PredefinedPath path = PredefinedPath.create(c);
@@ -56,13 +55,14 @@ public class Utils {
                 if (!Execution.delayUntil(() -> path.step(), 8000)) {
                     bot.showAndLogAlert("Can not walk, maybe started in wrong place");
                     bot.stop();
+                    break;
                 }
             }
         }
     }
 
-    public static void loadPresetAndWait(int preset) {
-        Summoner bot = (Summoner) Environment.getBot();
+    public static void loadPresetAndWait(int preset, Summoner bot) {
+        //Summoner bot = (Summoner) Environment.getBot();
 
         if (bot != null && bot.isRunning()) {
             if (Bank.loadPreset(preset, false)) {

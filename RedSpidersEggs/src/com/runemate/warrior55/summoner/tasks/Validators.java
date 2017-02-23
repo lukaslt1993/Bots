@@ -24,9 +24,21 @@ class Validators {
     Validators(Summoner s) {
         bot = s;   
     }
+    
+    private boolean setOrCheckInitialPos() {
+        if (bot.getInitialPos() == null) {
+            Player player = Players.getLocal();
+            
+            if (player != null) {
+                bot.setInitialPos(player.getPosition());
+            }
+        }
+        
+        return bot.getInitialPos() != null;
+    }
 
     boolean isBank() {
-        if (bot.getType().equals("Spawn")) {
+        if (bot.getType().equals("Spawn") && setOrCheckInitialPos()) {
             String pouchName = bot.getPouchName();
             return Bank.isOpen()
                     || !Inventory.containsAnyOf(bot.getScrollName())
@@ -44,7 +56,7 @@ class Validators {
     }
 
     boolean isPick() {
-        if (bot.getType().equals("Spawn")) {
+        if (bot.getType().equals("Spawn") && setOrCheckInitialPos()) {
             String[] s = bot.getLootNames();
 
             if (s != null) {
@@ -59,10 +71,13 @@ class Validators {
                     }
     
                     LocatableEntityQueryResults<GroundItem> leqr = bot.getAllLoot();
-                    return !leqr.isEmpty() && (leqr.size() >= Inventory.getEmptySlots() || time == 50000) && !isBank();
+                    return !leqr.isEmpty()
+                            && (leqr.size() >= Inventory.getEmptySlots()
+                            || time == 50000 || Players.getLocal().distanceTo(bot.getInitialPos()) > 4)
+                            && !isBank();
 
                 } else {
-                    bot.setLoot(bot.getAllLoot().first());
+                    bot.setLoot(bot.getAllLoot()./*first()*/nearest());
                     return bot.getLoot() != null && !isBank();
                 }
             }
@@ -72,17 +87,17 @@ class Validators {
     }
 
     boolean isRestore() {
-        return bot.getType().equals("Spawn")
+        return setOrCheckInitialPos() && bot.getType().equals("Spawn")
                 && (Summoning.getPoints() < 1 || Summoning.getSpecialMovePoints() < 6)
                 && !isBank() && !isPick();
     }
 
     boolean isSummon() {
-        return bot.getType().equals("Spawn") && !isBank() && !isPick() && !isRestore() && Players.getLocal().getFamiliar() == null;
+        return setOrCheckInitialPos() && bot.getType().equals("Spawn") && !isBank() && !isPick() && !isRestore() && Players.getLocal().getFamiliar() == null;
     }
 
     boolean isSpawn() {
-        return bot.getType().equals("Spawn") && !isBank() && !isPick() && !isSummon() && !isRestore();
+        return setOrCheckInitialPos() && bot.getType().equals("Spawn") && !isBank() && !isPick() && !isSummon() && !isRestore();
     }
 
     boolean isTeleport() {

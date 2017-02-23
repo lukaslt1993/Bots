@@ -18,7 +18,7 @@ public class PickTask extends Task {
 
     private final Validators validators;
     private final Summoner bot;
-    
+
     public PickTask(Summoner s) {
         bot = s;
         validators = new Validators(bot);
@@ -33,9 +33,17 @@ public class PickTask extends Task {
                 return true;
             }
 
-            if (bot.getType().equals("Spawn") && !Bank.isOpen() && !bot.isLootAll() && !bot.getPouchName().equals("Spirit cobra pouch")) {
-                bot.setNoDropCounter(bot.getNoDropCounter() + 1);
+            if (bot.getAllLoot() != null) {
+                
+                if (bot.getType().equals("Spawn")
+                        && !Bank.isOpen()
+                        && bot.getAllLoot().isEmpty()
+                        && !bot.getPouchName().equals("Spirit cobra pouch")) {
+
+                    bot.setNoDropCounter(bot.getNoDropCounter() + 1);
+                }
             }
+
         }
 
         return false;
@@ -52,8 +60,21 @@ public class PickTask extends Task {
     }
 
     private void pickWithLootAll() {
-        if (bot.getAllLoot().first().interact("Take")) {
-            Execution.delayUntil(() -> LootInventory.isOpen(), 3500);    
+        GroundItem loot = bot.getAllLoot()./*first()*/nearest();
+        walkIfFailing(loot);
+
+        if (loot.isVisible() || Camera.turnTo(loot)) {
+
+            if (loot.interact("Take")) {
+                failedPicksCounter = 0;
+                Execution.delayUntil(() -> LootInventory.isOpen(), 3500);
+
+            } else {
+                failedPicksCounter++;
+            }
+
+        } else {
+            failedPicksCounter++;
         }
 
         if (LootInventory.isOpen()) {
@@ -64,17 +85,7 @@ public class PickTask extends Task {
 
     private void pickWithoutLootAll() {
         GroundItem loot = bot.getLoot();
-
-        if (failedPicksCounter > 5) {
-            Coordinate c = loot.getPosition();
-
-            if (c != null) {
-                Utils.walk(loot.getPosition());
-
-            } else {
-                throw new RuntimeException("Didn't get the coordinate of drop, so stopped; bot was running? - " + bot.isRunning());
-            }
-        }
+        walkIfFailing(loot);
 
         if (loot.isVisible() || Camera.turnTo(loot)) {
             int usedSlots = Inventory.getUsedSlots();
@@ -89,6 +100,20 @@ public class PickTask extends Task {
 
         } else {
             failedPicksCounter++;
+        }
+    }
+
+    private void walkIfFailing(GroundItem loot) {
+
+        if (failedPicksCounter > 5) {
+            Coordinate c = loot.getPosition();
+
+            if (c != null) {
+                Utils.walk(loot.getPosition(), bot);
+
+            } else {
+                throw new RuntimeException("Didn't get the coordinate of drop, so stopped; bot was running? - " + bot.isRunning());
+            }
         }
     }
 

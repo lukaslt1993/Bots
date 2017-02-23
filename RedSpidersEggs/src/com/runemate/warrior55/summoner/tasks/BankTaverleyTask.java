@@ -56,7 +56,7 @@ public class BankTaverleyTask extends Task {
                 Execution.delayUntil(() -> player.getPosition().getPlane() == 0, 5000);
                 
             } else {
-                Utils.smartWalk(paths[Random.nextInt(paths.length)]);
+                Utils.smartWalk(paths[Random.nextInt(paths.length)], bot);
                 Execution.delayUntil(() -> !player.isMoving(), 1000, 8000);
             }
 
@@ -64,7 +64,7 @@ public class BankTaverleyTask extends Task {
             Bank.open();
 
         } else {
-            Utils.loadPresetAndWait(1);
+            Utils.loadPresetAndWait(1, bot);
         }
     }
 
