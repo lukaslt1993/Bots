@@ -73,7 +73,7 @@ public class InfuseTask extends Task {
                     throw new IllegalStateException("Can not generate walking path");
                 }*/
 
-                Utils.smartWalk(paths[Random.nextInt(paths.length)]);
+                Utils.smartWalk(paths[Random.nextInt(paths.length)], bot);
                 Player player = Players.getLocal();
                 Execution.delayUntil(() -> !player.isMoving(), 1000, 8000);
             }

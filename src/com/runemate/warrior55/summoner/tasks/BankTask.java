@@ -1,6 +1,7 @@
 package com.runemate.warrior55.summoner.tasks;
 
-import com.runemate.game.api.hybrid.entities.GameObject;
+import com.runemate.game.api.hybrid.entities.LocatableEntity;
+import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.local.Camera;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.region.GameObjects;
@@ -8,7 +9,9 @@ import com.runemate.game.api.rs3.local.hud.interfaces.Summoning;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
+import com.runemate.game.api.hybrid.queries.results.LocatableEntityQueryResults;
 import com.runemate.game.api.hybrid.queries.results.SpriteItemQueryResults;
+import com.runemate.game.api.hybrid.region.Npcs;
 import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.warrior55.summoner.main.Summoner;
 import com.runemate.warrior55.summoner.tasks.common.Constants;
@@ -26,6 +29,8 @@ public class BankTask extends Task {
 
     private final Validators validators;
     
+    private LocatableEntity spawningBank;
+
     public BankTask(Summoner s) {
         bot = s;
         validators = new Validators(bot);
@@ -41,6 +46,7 @@ public class BankTask extends Task {
 
     @Override
     public void execute() {
+
         if (Bank.isOpen() || openBank()) {
             //setFields();
 
@@ -55,16 +61,14 @@ public class BankTask extends Task {
             }
 
         } else {
-            Utils.walk(Constants.BANK_COORD);
+            Utils.walk(getSpawningBank().getPosition(), bot);
         }
     }
 
     private boolean openBank() {
-        GameObject bank = GameObjects.newQuery().names("Well of Goodwill").results().nearest();
+        if (spawningBank != null && (spawningBank.isVisible() || Camera.turnTo(spawningBank))) {
 
-        if (bank != null && (bank.isVisible() || Camera.turnTo(bank))) {
-
-            if (bank.interact("Open Bank", bank.getDefinition().getName())) {
+            if (/*Bank.open() ||*/spawningBank.interact(Constants.BANK_PATTERN/*, bank.getDefinition().getName()*/)) {
                 Execution.delayUntil(() -> Bank.isOpen(), 500, 5000);
             }
         }
@@ -112,8 +116,8 @@ public class BankTask extends Task {
                 bot.stop();
             }
 
-        } else if (!Inventory.containsAnyOf(Constants.POTION_NAMES[0], Constants.POTION_NAMES[1])) {
-            return Bank.withdraw(pots.first(), 2);
+        } else if (!Inventory.containsAnyOf(Constants.POTION_NAMES[0], Constants.POTION_NAMES[1]) && Inventory.getQuantity(Constants.POTION_NAMES) < 4) {
+            return Bank.withdraw(pots.sort((pot1, pot2) -> pot1.getDefinition().getName().compareTo(pot2.getDefinition().getName())).last(), 2);
         }
 
         return true;
@@ -167,21 +171,48 @@ public class BankTask extends Task {
             loadPresetAndWait(1);
         }
     }
-    
+
     private void loadPresetAndWait(int preset) {
         if (Bank.loadPreset(preset, false)) {
-            Execution.delayUntil(() -> !validate(), 5000);
 
-            if (validate()) {
-                bot.showAndLogAlert("Out of stuff");
-                bot.stop();
+            Execution.delayUntil(() -> !Bank.isOpen(), 2000);
+
+            if (!Bank.isOpen()) {
+                Execution.delayUntil(() -> !validate(), 5000);
+
+                if (validate()) {
+                    bot.showAndLogAlert("Out of stuff");
+                    bot.stop();
+                }
             }
         }
     }
-    
+
+    private LocatableEntity getSpawningBank() {
+        Player player = Players.getLocal();
+        if (spawningBank == null /*|| player.distanceTo(spawningBank) >= 25*/) {
+            LocatableEntityQueryResults banks = GameObjects.newQuery().actions(Constants.BANK_PATTERN).surroundingsReachable().results();
+            banks.add(GameObjects.newQuery().actions(Constants.BANK_PATTERN).reachable().results().nearest());
+            banks.add(Npcs.newQuery().actions(Constants.BANK_PATTERN).reachable().results().nearest());
+            banks.add(Npcs.newQuery().actions(Constants.BANK_PATTERN).surroundingsReachable().results().nearest());
+            banks.add(GameObjects.newQuery().names("Bank chest").results().nearest());
+            spawningBank = banks.nearest();
+            if (spawningBank != null /*&& player.distanceTo(spawningBank) < 25*/) {
+                //bot.setInitialPos(player.getPosition());
+                return spawningBank;
+            } else {
+                bot.showAndLogAlert("No bank(er) nearby, try to run closer to bank(er)");
+                bot.stop();
+                return null;
+            }
+        } else {
+            return spawningBank;
+        }
+    }
+
     /*private void setFields() {
-        scrollName = bot.getScrollName();
-        pouchName = bot.getPouchName();
-        itemToKeepNames[4] = scrollName;
-    }*/
+     scrollName = bot.getScrollName();
+     pouchName = bot.getPouchName();
+     itemToKeepNames[4] = scrollName;
+     }*/
 }

@@ -46,7 +46,7 @@ public class BankBarbarianTask extends Task {
             Npc banker = Npcs.newQuery().names("Fremennik banker").results().nearest();
             
             if (banker == null || player.distanceTo(banker) > 5 || !banker.click()) {
-                Utils.walk(Constants.BARBARIAN_BANK_COORD);   
+                Utils.walk(Constants.BARBARIAN_BANK_COORD, bot);   
             }
             
             Execution.delayUntil(() -> !player.isMoving(), 1000, 8000);
@@ -59,11 +59,11 @@ public class BankBarbarianTask extends Task {
                 bot.stop();
 
             } else {
-                Utils.loadPresetAndWait(2);    
+                Utils.loadPresetAndWait(2, bot);    
             }
             
         } else {
-            Utils.loadPresetAndWait(1);
+            Utils.loadPresetAndWait(1, bot);
         }
     }  
 }

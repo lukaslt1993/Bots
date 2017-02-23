@@ -3,6 +3,7 @@ package com.runemate.warrior55.summoner.main;
 import com.runemate.game.api.client.embeddable.EmbeddableUI;
 import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.entities.GroundItem;
+import com.runemate.game.api.hybrid.location.Coordinate;
 import com.runemate.game.api.hybrid.queries.results.LocatableEntityQueryResults;
 import com.runemate.game.api.hybrid.util.Resources;
 import com.runemate.game.api.hybrid.util.StopWatch;
@@ -68,6 +69,8 @@ public class Summoner extends TaskBot implements EmbeddableUI {
     public final StopWatch runtime = new StopWatch();
 
     private long oldRuntime = 0;
+    
+    private Coordinate initialPos;
 
     private ObjectProperty<Node> botInterfaceProperty;
 
@@ -153,6 +156,14 @@ public class Summoner extends TaskBot implements EmbeddableUI {
 
     public void setSummonMethod(String summonMethod) {
         this.summonMethod = summonMethod;
+    }
+    
+    public Coordinate getInitialPos() {
+        return initialPos;
+    }
+
+    public void setInitialPos(Coordinate initialPos) {
+        this.initialPos = initialPos;
     }
 
     @Override

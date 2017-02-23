@@ -40,7 +40,7 @@ public class InteractTrapDoorTask extends Task {
         Player player = Players.getLocal();
         
         if (door == null || player.distanceTo(door) > 5 || !door.click()) {
-            Utils.walk(Constants.TRAP_DOOR_COORD);
+            Utils.walk(Constants.TRAP_DOOR_COORD, bot);
         }
         
         else if (!isClimbDown) {
