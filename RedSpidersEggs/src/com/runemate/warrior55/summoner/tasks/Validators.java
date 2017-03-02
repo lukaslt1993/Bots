@@ -11,6 +11,7 @@ import com.runemate.game.api.hybrid.region.GameObjects;
 import com.runemate.game.api.hybrid.region.GroundItems;
 import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.hybrid.util.Timer;
+import com.runemate.game.api.rs3.local.hud.interfaces.LootInventory;
 import com.runemate.game.api.rs3.local.hud.interfaces.MakeXInterface;
 import com.runemate.game.api.rs3.local.hud.interfaces.Summoning;
 import com.runemate.warrior55.summoner.main.Summoner;
@@ -40,7 +41,8 @@ class Validators {
     boolean isBank() {
         if (bot.getType().equals("Spawn") && setOrCheckInitialPos()) {
             String pouchName = bot.getPouchName();
-            return Bank.isOpen()
+            return !LootInventory.isOpen()
+                    && (Bank.isOpen()
                     || !Inventory.containsAnyOf(bot.getScrollName())
                     || pouchName.equals("Spirit cobra pouch")
                     && !Inventory.containsAnyOf("Egg")
@@ -49,7 +51,7 @@ class Validators {
                     || Players.getLocal().getFamiliar() == null
                     && !Inventory.containsAnyOf(pouchName)
                     || Summoning.getPoints() < 1
-                    && !Inventory.containsAnyOf(Constants.POTION_NAMES);
+                    && !Inventory.containsAnyOf(Constants.POTION_NAMES));
         }
 
         return false;
@@ -71,7 +73,8 @@ class Validators {
                     }
     
                     LocatableEntityQueryResults<GroundItem> leqr = bot.getAllLoot();
-                    return !leqr.isEmpty()
+                    return LootInventory.isOpen()
+                            || !leqr.isEmpty()
                             && (leqr.size() >= Inventory.getEmptySlots()
                             || time == 50000 || Players.getLocal().distanceTo(bot.getInitialPos()) > 4)
                             && !isBank();

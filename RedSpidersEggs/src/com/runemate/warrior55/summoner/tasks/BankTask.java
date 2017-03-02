@@ -9,6 +9,8 @@ import com.runemate.game.api.rs3.local.hud.interfaces.Summoning;
 import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
+import com.runemate.game.api.hybrid.location.Coordinate;
+import com.runemate.game.api.hybrid.queries.LocatableEntityQueryBuilder;
 import com.runemate.game.api.hybrid.queries.results.LocatableEntityQueryResults;
 import com.runemate.game.api.hybrid.queries.results.SpriteItemQueryResults;
 import com.runemate.game.api.hybrid.region.Npcs;
@@ -66,7 +68,19 @@ public class BankTask extends Task {
             }
 
         } else {
-            Utils.walk(getSpawningBank().getPosition(), bot);
+            LocatableEntity le = getSpawningBank();
+
+            if (le != null) {
+                Coordinate c = le.getPosition();
+
+                if (c != null) {
+                    Utils.walk(c, bot);
+
+                } else {
+                    bot.showAndLogAlert("Can not walk to bank, try to start closer to bank or find another");
+                    bot.stop();
+                }
+            }
         }
     }
 
@@ -196,14 +210,30 @@ public class BankTask extends Task {
     private LocatableEntity getSpawningBank() {
         Player player = Players.getLocal();
         if (spawningBank == null /*|| player.distanceTo(spawningBank) >= 25*/) {
-            Execution.delayUntil(() -> player.isVisible());
-            LocatableEntityQueryResults banks = GameObjects.newQuery().actions(bankPattern).surroundingsReachable().results();
-            addIfNotNull(banks, GameObjects.newQuery().actions(bankPattern).reachable().results().nearest());
-            addIfNotNull(banks, Npcs.newQuery().actions(bankPattern).reachable().results().nearest());
-            addIfNotNull(banks, Npcs.newQuery().actions(bankPattern).surroundingsReachable().results().nearest());
-            addIfNotNull(banks, GameObjects.newQuery().names("Bank chest").reachable().results().nearest());
-            addIfNotNull(banks, GameObjects.newQuery().names("Bank chest").surroundingsReachable().results().nearest());
-            spawningBank = banks.nearest();
+            boolean playerVisible = player.isVisible();
+            if (!playerVisible) {
+                Execution.delayUntil(() -> player.isVisible());
+            }
+            int oldResultsCount = -1, resultsCount = -1;
+            LocatableEntityQueryResults bankEntities;
+            for (int i = 0; i < 5; i++) {
+                oldResultsCount = resultsCount;
+                LocatableEntityQueryBuilder banksBuilder = GameObjects.newQuery().actions(bankPattern);
+                LocatableEntityQueryBuilder bankersBuilder = Npcs.newQuery().actions(bankPattern);
+                //LocatableEntityQueryBuilder bankChestsBuilder = GameObjects.newQuery().names("Bank chest");
+                bankEntities = (LocatableEntityQueryResults) banksBuilder.surroundingsReachable().results();
+                addIfNotNull(bankEntities, ((LocatableEntityQueryResults) banksBuilder.reachable().results()).nearest());
+                addIfNotNull(bankEntities, ((LocatableEntityQueryResults) bankersBuilder.reachable().results()).nearest());
+                addIfNotNull(bankEntities, ((LocatableEntityQueryResults) bankersBuilder.surroundingsReachable().results()).nearest());
+                addIfNotNull(bankEntities, ((LocatableEntityQueryResults) GameObjects.newQuery().names("Bank chest").reachable().results()).nearest());
+                addIfNotNull(bankEntities, ((LocatableEntityQueryResults) GameObjects.newQuery().names("Bank chest").surroundingsReachable().results()).nearest());
+                resultsCount = bankEntities.size();
+                if (resultsCount == oldResultsCount || playerVisible) {
+                    spawningBank = bankEntities.nearest();
+                    break;
+                }
+                Execution.delay(1000);
+            }
             if (spawningBank != null /*&& player.distanceTo(spawningBank) < 25*/) {
                 //bot.setInitialPos(player.getPosition());
                 return spawningBank;

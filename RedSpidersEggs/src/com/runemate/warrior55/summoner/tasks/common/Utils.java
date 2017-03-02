@@ -44,7 +44,7 @@ public class Utils {
         }
     }
 
-    public static void smartWalk(Coordinate[] c, Summoner bot) {
+    /*public static void smartWalk(Coordinate[] c, Summoner bot) {
         //Summoner bot = (Summoner) Environment.getBot();
 
         if (bot != null && bot.isRunning()) {
@@ -59,7 +59,7 @@ public class Utils {
                 }
             }
         }
-    }
+    }*/
 
     public static void loadPresetAndWait(int preset, Summoner bot) {
         //Summoner bot = (Summoner) Environment.getBot();
