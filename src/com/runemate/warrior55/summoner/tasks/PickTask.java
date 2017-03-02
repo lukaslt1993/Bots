@@ -34,7 +34,7 @@ public class PickTask extends Task {
             }
 
             if (bot.getAllLoot() != null) {
-                
+
                 if (bot.getType().equals("Spawn")
                         && !Bank.isOpen()
                         && bot.getAllLoot().isEmpty()
@@ -60,26 +60,36 @@ public class PickTask extends Task {
     }
 
     private void pickWithLootAll() {
-        GroundItem loot = bot.getAllLoot()./*first()*/nearest();
-        walkIfFailing(loot);
+        if (!LootInventory.isOpen()) {
+            GroundItem loot = bot.getAllLoot()./*first()*/nearest();
+            walkIfFailing(loot);
 
-        if (loot.isVisible() || Camera.turnTo(loot)) {
+            if (loot.isVisible() || Camera.turnTo(loot)) {
 
-            if (loot.interact("Take")) {
-                failedPicksCounter = 0;
-                Execution.delayUntil(() -> LootInventory.isOpen(), 3500);
+                if (loot.interact("Take")) {
+                    failedPicksCounter = 0;
+                    Execution.delayUntil(() -> LootInventory.isOpen(), 3500);
+
+                } else {
+                    failedPicksCounter++;
+                }
 
             } else {
                 failedPicksCounter++;
             }
-
+            
         } else {
-            failedPicksCounter++;
-        }
-
-        if (LootInventory.isOpen()) {
-            LootInventory.takeAll();
-            LootInventory.close();
+            int lootCount = LootInventory.getQuantity(bot.getLootNames());
+            
+            if (lootCount <= 0) {
+                LootInventory.close();
+                
+            } else if (lootCount < LootInventory.getQuantity()) {
+                LootInventory.take(bot.getLootNames());
+                
+            } else {
+                LootInventory.takeAll();
+            }
         }
     }
 
