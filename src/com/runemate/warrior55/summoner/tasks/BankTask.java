@@ -10,7 +10,6 @@ import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.task.Task;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
 import com.runemate.game.api.hybrid.location.Coordinate;
-import com.runemate.game.api.hybrid.queries.LocatableEntityQueryBuilder;
 import com.runemate.game.api.hybrid.queries.results.LocatableEntityQueryResults;
 import com.runemate.game.api.hybrid.queries.results.SpriteItemQueryResults;
 import com.runemate.game.api.hybrid.region.Npcs;
@@ -218,15 +217,15 @@ public class BankTask extends Task {
             LocatableEntityQueryResults bankEntities;
             for (int i = 0; i < 5; i++) {
                 oldResultsCount = resultsCount;
-                LocatableEntityQueryBuilder banksBuilder = GameObjects.newQuery().actions(bankPattern);
+                /*LocatableEntityQueryBuilder banksBuilder = GameObjects.newQuery().actions(bankPattern);
                 LocatableEntityQueryBuilder bankersBuilder = Npcs.newQuery().actions(bankPattern);
-                //LocatableEntityQueryBuilder bankChestsBuilder = GameObjects.newQuery().names("Bank chest");
-                bankEntities = (LocatableEntityQueryResults) banksBuilder.surroundingsReachable().results();
-                addIfNotNull(bankEntities, ((LocatableEntityQueryResults) banksBuilder.reachable().results()).nearest());
-                addIfNotNull(bankEntities, ((LocatableEntityQueryResults) bankersBuilder.reachable().results()).nearest());
-                addIfNotNull(bankEntities, ((LocatableEntityQueryResults) bankersBuilder.surroundingsReachable().results()).nearest());
-                addIfNotNull(bankEntities, ((LocatableEntityQueryResults) GameObjects.newQuery().names("Bank chest").reachable().results()).nearest());
-                addIfNotNull(bankEntities, ((LocatableEntityQueryResults) GameObjects.newQuery().names("Bank chest").surroundingsReachable().results()).nearest());
+                LocatableEntityQueryBuilder bankChestsBuilder = GameObjects.newQuery().names("Bank chest");*/
+                bankEntities = GameObjects.newQuery().actions(bankPattern).surroundingsReachable().results();
+                addIfNotNull(bankEntities, GameObjects.newQuery().actions(bankPattern).reachable().results().nearest());
+                addIfNotNull(bankEntities, Npcs.newQuery().actions(bankPattern).reachable().results().nearest());
+                addIfNotNull(bankEntities, Npcs.newQuery().actions(bankPattern).surroundingsReachable().results().nearest());
+                addIfNotNull(bankEntities, GameObjects.newQuery().names("Bank chest").reachable().results().nearest());
+                addIfNotNull(bankEntities, GameObjects.newQuery().names("Bank chest").surroundingsReachable().results().nearest());
                 resultsCount = bankEntities.size();
                 if (resultsCount == oldResultsCount || playerVisible) {
                     spawningBank = bankEntities.nearest();
