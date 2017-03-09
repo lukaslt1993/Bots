@@ -81,7 +81,7 @@ public class PickTask extends Task {
         } else {
             int lootCount = LootInventory.getQuantity(bot.getLootNames());
             
-            if (lootCount <= 0) {
+            if (lootCount <= 0 || Inventory.isFull()) {
                 LootInventory.close();
                 
             } else if (lootCount < LootInventory.getQuantity()) {
