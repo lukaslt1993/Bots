@@ -1,0 +1,35 @@
+<manifest>
+    <main-class>com.runemate.warrior55.zammy.main.ZammyWineGrabber</main-class>
+    <name>TheNewZammyWineBeta</name>
+    <tag-line>This bot was created after drinking zammy wine.</tag-line>
+    <description>Have runes in preset 1.</description>
+    <version>1.0.0</version>
+    <compatibility>
+        <game>RS3</game>
+        <game>OSRS</game>
+    </compatibility>
+    <categories>
+        <category>MONEYMAKING</category>
+        <category>MAGIC</category>
+    </categories>
+    <internal-id>TheNewZammyWine</internal-id>
+    <open-source>false</open-source>
+    <hidden>false</hidden>
+    <access>public</access>
+    <tags>
+        <tag>Zamorak</tag>
+        <tag>Zammy</tag>
+        <tag>Wine</tag>
+        <tag>Wines</tag>
+        <tag>Grab</tag>
+        <tag>Grabber</tag>
+        <tag>Cash</tag>
+        <tag>Moneymaking</tag>
+        <tag>Money</tag>
+        <tag>Cashmaking</tag>
+    </tags>
+    <resources>
+        <resource>com/runemate/warrior55/zammy/gui/View.fxml</resource>
+        <resource>com/runemate/warrior55/zammy/gui/Style.css</resource>
+    </resources>
+</manifest>
