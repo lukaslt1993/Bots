@@ -124,19 +124,6 @@ public class ZammyWineGrabber extends TreeBot implements EmbeddableUI {
     
     @Override
     public void onStart(String... args) {
-        setLoopDelay(1, 2);
-        if (Environment.isOSRS()) {
-            setWineName("Wine of zamorak");
-            setSpotCoord(new Coordinate(2930, 3515));
-            setWineCoord(new Coordinate(2931, 3515));
-        } else {
-            setWineName("Wine of Zamorak");
-            setSpotCoord(new Coordinate(2952, 3474));
-            setWineCoord(new Coordinate(2952, 3473));
-            setSafeSpotCoord(new Coordinate(2970, 3482));
-            setFurtherSafeSpotCoord(new Coordinate (2982, 3502));
-            setSafeSpotHalfwayCoord(new Coordinate(2962, 3477));
-        }
         pause();
         /*setEatAt(40);
         setPreset(1);

@@ -1,6 +1,7 @@
 
 package com.runemate.warrior55.zammy.branches;
 
+import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.region.Npcs;
 import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.rs3.local.hud.Powers;
@@ -16,6 +17,7 @@ public class InCombatBranch extends BranchTask {
     private final ZammyWineGrabber bot;
     private final RS3StuffCheckBranch rs3StuffCheckBranch;
     private final PrayerBranch prayerBranch;
+    private final Player player = Players.getLocal();
     
     public InCombatBranch(ZammyWineGrabber zwg) {
         bot = zwg;
@@ -48,6 +50,6 @@ public class InCombatBranch extends BranchTask {
 
     @Override
     public boolean validate() {
-        return !Npcs.newQuery().targeting(Players.getLocal()).results().isEmpty();
+        return !Npcs.newQuery().targeting(player).results().isEmpty();
     }
 }
