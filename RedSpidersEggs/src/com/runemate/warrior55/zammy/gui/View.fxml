@@ -15,10 +15,10 @@
       <RadioButton fx:id="presetRadio2" layoutX="160.0" layoutY="59.0" text="Use preset 2"/>
       <RadioButton fx:id="eatRadio" layoutX="14.0" layoutY="104.0" text="Inventory and/or preset contains food?" selected="true"/>
       <Slider fx:id="healthSlider" layoutX="14.0" layoutY="149.0" prefWidth="150.0" min="1.0" max="99.0" value="50.0" showTickLabels="true"/>  
-      <Label layoutX="169.0" layoutY="149.0" text="Eat at %" /> 
+      <Label fx:id="eatLabel" layoutX="169.0" layoutY="149.0" text="Eat at %" /> 
       <RadioButton fx:id="prayRadio" layoutX="14.0" layoutY="194.0" text="Prayer lvl 37 or higher?" selected="true"/>
       <Slider fx:id="praySlider" layoutX="14.0" layoutY="239.0" prefWidth="150.0" min="1.0" max="99.0" value="20.0" showTickLabels="true"/>  
-      <Label layoutX="169.0" layoutY="239.0" text="Restore prayer at %" /> 
+      <Label fx:id="prayLabel" layoutX="169.0" layoutY="239.0" text="Restore prayer at %" /> 
       <Spinner fx:id="failedPicksSpinner" layoutX="14.0" layoutY="284.0" prefWidth="150.0"/>
       <Label layoutX="169.0" layoutY="284.0" text="Failed picks in a row to hop world?" /> 
       <Button fx:id="startButton" layoutX="14.0" layoutY="329.0" mnemonicParsing="false" text="Start" prefHeight="45.0" prefWidth="269.0"/>  

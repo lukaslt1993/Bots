@@ -1,6 +1,7 @@
 
 package com.runemate.warrior55.zammy.branches;
 
+import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.location.Coordinate;
 import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.script.framework.tree.BranchTask;
@@ -13,6 +14,7 @@ public class PlayerNearAltarBranch extends BranchTask {
     private final Coordinate altarCoord = new Coordinate (2948, 3475);
     private final Run runToAltar = new Run(altarCoord, false);
     private final ClickAltar clickAltar = new ClickAltar();
+    private final Player player = Players.getLocal();
     
     @Override
     public TreeTask successTask() {
@@ -26,6 +28,6 @@ public class PlayerNearAltarBranch extends BranchTask {
 
     @Override
     public boolean validate() {
-        return Players.getLocal().distanceTo(altarCoord) <= 4;
+        return player.distanceTo(altarCoord) <= 4;
     }
 }

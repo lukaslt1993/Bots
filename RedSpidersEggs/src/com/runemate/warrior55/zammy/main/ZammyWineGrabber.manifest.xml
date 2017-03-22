@@ -2,7 +2,7 @@
     <main-class>com.runemate.warrior55.zammy.main.ZammyWineGrabber</main-class>
     <name>TheNewZammyWineBeta</name>
     <tag-line>This bot was created after drinking zammy wine.</tag-line>
-    <description>Have runes in preset 1.</description>
+    <description>Telegrabs Wine of Zamorak with food and world hop support.</description>
     <version>1.0.0</version>
     <compatibility>
         <game>RS3</game>

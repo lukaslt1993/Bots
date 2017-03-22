@@ -41,11 +41,6 @@ public class Run extends LeafTask {
         }
 
         if (path != null) {
-            List <? extends Locatable> l = path.getVertices();
-            for (Locatable loc: l) {
-                System.out.print(loc.getPosition().getX() + " " + loc.getPosition().getY() + " ");
-            } 
-            System.out.println(path.getNext().getPosition().getX() + " " + path.getNext().getPosition().getY());
             path.step(false);
         } else {
             throw new IllegalStateException("Can not generate walking path");

@@ -2,6 +2,7 @@ package com.runemate.warrior55.zammy.leafs;
 
 import com.runemate.game.api.hybrid.local.Worlds;
 import com.runemate.game.api.hybrid.local.hud.interfaces.WorldHop;
+import com.runemate.game.api.script.Execution;
 import com.runemate.game.api.script.framework.tree.LeafTask;
 import com.runemate.warrior55.zammy.main.ZammyWineGrabber;
 
@@ -22,6 +23,7 @@ public class HopWorld extends LeafTask {
         } else if (currentWorld != world) {
             if (WorldHop.hopTo(world)) {
                 bot.setFailedPicks(0);
+                Execution.delay(5000);
             }
             /*if (GameEvents.Universal.LOBBY_HANDLER.isEnabled()) {
                 GameEvents.Universal.LOBBY_HANDLER.disable();

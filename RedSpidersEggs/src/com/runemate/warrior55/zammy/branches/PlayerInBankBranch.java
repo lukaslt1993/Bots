@@ -1,5 +1,6 @@
 package com.runemate.warrior55.zammy.branches;
 
+import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.location.Coordinate;
 import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.script.framework.tree.BranchTask;
@@ -13,6 +14,7 @@ public class PlayerInBankBranch extends BranchTask {
     private final Coordinate bankCoord = new Coordinate(2947, 3368);
     private final BankOpenBranch bankOpenBranch;
     private final Run runToBank = new Run(bankCoord, false);
+    private final Player player = Players.getLocal();
 
     public PlayerInBankBranch(ZammyWineGrabber zwg) {
         bot = zwg;
@@ -31,6 +33,6 @@ public class PlayerInBankBranch extends BranchTask {
 
     @Override
     public boolean validate() {
-        return Players.getLocal().distanceTo(bankCoord) <= 4;
+        return player.distanceTo(bankCoord) <= 4;
     }
 }
