@@ -1,9 +1,7 @@
 
 package com.runemate.warrior55.zammy.branches;
 
-import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.region.Npcs;
-import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.rs3.local.hud.Powers;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionBar;
 import com.runemate.game.api.script.Execution;
@@ -11,13 +9,11 @@ import com.runemate.game.api.script.framework.tree.BranchTask;
 import com.runemate.game.api.script.framework.tree.TreeTask;
 import com.runemate.warrior55.zammy.main.ZammyWineGrabber;
 
-
 public class InCombatBranch extends BranchTask {
     
     private final ZammyWineGrabber bot;
     private final RS3StuffCheckBranch rs3StuffCheckBranch;
     private final PrayerBranch prayerBranch;
-    private final Player player = Players.getLocal();
     
     public InCombatBranch(ZammyWineGrabber zwg) {
         bot = zwg;
@@ -50,6 +46,6 @@ public class InCombatBranch extends BranchTask {
 
     @Override
     public boolean validate() {
-        return !Npcs.newQuery().targeting(player).results().isEmpty();
+        return !Npcs.newQuery().targeting(bot.getPlayer()).results().isEmpty();
     }
 }

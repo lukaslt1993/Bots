@@ -1,9 +1,7 @@
 
 package com.runemate.warrior55.zammy.branches;
 
-import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.location.Coordinate;
-import com.runemate.game.api.hybrid.region.Players;
 import com.runemate.game.api.script.framework.tree.BranchTask;
 import com.runemate.game.api.script.framework.tree.TreeTask;
 import com.runemate.warrior55.zammy.leafs.Run;
@@ -14,7 +12,6 @@ public class PlayerInSafeSpotBranch extends BranchTask {
     private final ZammyWineGrabber bot;
     private final Run runToSafeSpot;
     private final Run runFurther;
-    private final Player player = Players.getLocal();
     
     public PlayerInSafeSpotBranch(ZammyWineGrabber zwg) {
         bot = zwg;
@@ -35,6 +32,6 @@ public class PlayerInSafeSpotBranch extends BranchTask {
 
     @Override
     public boolean validate() {
-        return player.distanceTo(bot.getSafeSpotCoord()) <= 4;
+        return bot.getPlayer().distanceTo(bot.getSafeSpotCoord()) <= 4;
     }
 }

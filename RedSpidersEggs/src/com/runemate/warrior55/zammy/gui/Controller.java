@@ -1,7 +1,6 @@
 package com.runemate.warrior55.zammy.gui;
 
 import com.runemate.game.api.hybrid.Environment;
-import com.runemate.game.api.hybrid.location.Coordinate;
 import com.runemate.warrior55.zammy.main.ZammyWineGrabber;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -48,9 +47,6 @@ public class Controller implements Initializable {
         presetRadio1.setToggleGroup(toggleGroup);
         presetRadio2.setToggleGroup(toggleGroup);
         if (Environment.isOSRS()) {
-            bot.setWineName("Wine of zamorak");
-            bot.setSpotCoord(new Coordinate(2930, 3515));
-            bot.setWineCoord(new Coordinate(2931, 3515));
             eatRadio.setDisable(true);
             prayRadio.setDisable(true);
             healthSlider.setDisable(true);
@@ -58,12 +54,6 @@ public class Controller implements Initializable {
             eatLabel.setDisable(true);
             prayLabel.setDisable(true);
         } else {
-            bot.setWineName("Wine of Zamorak");
-            bot.setSpotCoord(new Coordinate(2952, 3474));
-            bot.setWineCoord(new Coordinate(2952, 3473));
-            bot.setSafeSpotCoord(new Coordinate(2970, 3482));
-            bot.setFurtherSafeSpotCoord(new Coordinate(2982, 3502));
-            bot.setSafeSpotHalfwayCoord(new Coordinate(2962, 3477));
             eatRadio.selectedProperty().addListener((obs, old, cur) -> {
                 if (!cur) {
                     healthSlider.setDisable(true);
@@ -86,7 +76,6 @@ public class Controller implements Initializable {
             );
         }
         startButton.setOnAction((event) -> {
-            bot.setLoopDelay(1, 2);
             bot.setIsMember(memberRadio.isSelected());
             bot.setPreset(((RadioButton) toggleGroup.getSelectedToggle()).getText().contains("1") ? 1 : 2);
             bot.setEatAt((int) healthSlider.getValue());

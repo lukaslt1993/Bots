@@ -3,6 +3,7 @@ package com.runemate.warrior55.zammy.leafs;
 
 import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.input.Mouse;
+import com.runemate.game.api.hybrid.local.hud.InteractablePoint;
 import com.runemate.game.api.osrs.local.hud.interfaces.Magic;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionBar;
 import com.runemate.game.api.script.framework.tree.LeafTask;
@@ -27,7 +28,14 @@ public class ClickTelegrabAndHoverMouse extends LeafTask {
             } else {
                 throw new IllegalStateException("No telekinetic grab in action bar");
             }
-            Mouse.move(bot.getWineCoord());
+        }
+        InteractablePoint oldp = bot.getOldWinePoint();
+        InteractablePoint newp = bot.getNewWinePoint();
+        if (oldp != null && newp != null && oldp.x == newp.x && oldp.y == newp.y) {
+            Mouse.move(newp);
+        } else {
+            Mouse.move(bot.getWineCoord());   
+            bot.setOldWinePoint(newp);
         }
     }
 }

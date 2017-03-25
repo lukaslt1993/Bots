@@ -1,7 +1,5 @@
 package com.runemate.warrior55.zammy.leafs;
 
-import com.runemate.game.api.hybrid.Environment;
-import com.runemate.game.api.osrs.local.hud.interfaces.Prayer;
 import com.runemate.game.api.rs3.local.hud.Powers;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionBar;
 import com.runemate.game.api.script.Execution;
