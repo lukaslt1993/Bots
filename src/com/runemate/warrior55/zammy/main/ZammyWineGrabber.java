@@ -4,6 +4,9 @@ import com.runemate.game.api.client.embeddable.EmbeddableUI;
 import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.local.hud.InteractablePoint;
+import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
+import com.runemate.game.api.hybrid.local.hud.interfaces.Equipment;
+import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.location.Coordinate;
 import com.runemate.game.api.hybrid.util.Resources;
 import com.runemate.game.api.script.framework.tree.TreeBot;
@@ -149,6 +152,18 @@ public class ZammyWineGrabber extends TreeBot implements EmbeddableUI {
     public void setNewWinePoint(InteractablePoint newWinePoint) {
         this.newWinePoint = newWinePoint;
     }
+    
+    public boolean checkInventory(boolean isBankOpen) {
+        if (isBankOpen) {
+            return (Inventory.contains("Law rune") || Bank.contains("Law rune"))
+                    && (Equipment.containsAnyOf("Staff of air", "Air battlestaff", "Mystic air staff")
+                    || Inventory.contains("Air rune") || Bank.contains("Air rune"));
+        } else {
+            return Inventory.contains("Law rune")
+                    && (Equipment.containsAnyOf("Staff of air", "Air battlestaff", "Mystic air staff")
+                    || Inventory.contains("Air rune"));
+        }
+    }
 
     @Override
     public void onStart(String... args) {
@@ -197,15 +212,15 @@ public class ZammyWineGrabber extends TreeBot implements EmbeddableUI {
         return botInterfaceProperty;
     }
 
-    @Override
-    public void onStop() {
-        //mouseRenderer.close();
-    }
-
     public void stopMouseRenderer() {
         /*if (mouseRenderer != null) {
             mouseRenderer.getThread().interrupt();
         }*/
     }
+    
+    /*@Override
+    public void onStop() {
+        mouseRenderer.close();
+    }*/
 
 }

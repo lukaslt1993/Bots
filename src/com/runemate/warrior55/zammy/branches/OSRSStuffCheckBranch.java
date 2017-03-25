@@ -4,7 +4,6 @@ package com.runemate.warrior55.zammy.branches;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.script.framework.tree.BranchTask;
 import com.runemate.game.api.script.framework.tree.TreeTask;
-import com.runemate.warrior55.zammy.common.Stuff;
 import com.runemate.warrior55.zammy.main.ZammyWineGrabber;
 
 public class OSRSStuffCheckBranch extends BranchTask {
@@ -31,6 +30,6 @@ public class OSRSStuffCheckBranch extends BranchTask {
 
     @Override
     public boolean validate() {
-        return !Inventory.isFull() && Stuff.check(false);
+        return !Inventory.isFull() && bot.checkInventory(false);
     }
 }
