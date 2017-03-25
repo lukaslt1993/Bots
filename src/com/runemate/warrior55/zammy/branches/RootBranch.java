@@ -12,6 +12,7 @@ public class RootBranch extends BranchTask {
     private final ZammyWineGrabber bot;
     private final FailedPicksBranch failedPicksBranch;
     private final EnterTheVoid enterTheVoid = new EnterTheVoid();
+    private Player player;
 
     public RootBranch(ZammyWineGrabber zwg) {
         bot = zwg;
@@ -20,6 +21,7 @@ public class RootBranch extends BranchTask {
 
     @Override
     public TreeTask successTask() {
+        bot.setPlayer(player);
         return failedPicksBranch;
     }
 
@@ -30,7 +32,7 @@ public class RootBranch extends BranchTask {
 
     @Override
     public boolean validate() {
-        Player player = Players.getLocal();
+        player = Players.getLocal();
         return player != null && player.isVisible();
     }
 }

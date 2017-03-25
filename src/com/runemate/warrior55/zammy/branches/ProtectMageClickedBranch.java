@@ -1,8 +1,6 @@
 
 package com.runemate.warrior55.zammy.branches;
 
-import com.runemate.game.api.hybrid.Environment;
-import com.runemate.game.api.osrs.local.hud.interfaces.Prayer;
 import com.runemate.game.api.rs3.local.hud.Powers;
 import com.runemate.game.api.script.framework.tree.BranchTask;
 import com.runemate.game.api.script.framework.tree.TreeTask;

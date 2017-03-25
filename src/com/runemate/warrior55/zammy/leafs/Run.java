@@ -1,13 +1,11 @@
 package com.runemate.warrior55.zammy.leafs;
 
-import com.runemate.game.api.hybrid.entities.details.Locatable;
 import com.runemate.game.api.hybrid.location.Coordinate;
 import com.runemate.game.api.hybrid.location.navigation.Path;
 import com.runemate.game.api.hybrid.location.navigation.Traversal;
 import com.runemate.game.api.hybrid.location.navigation.basic.BresenhamPath;
 import com.runemate.game.api.hybrid.location.navigation.basic.PredefinedPath;
 import com.runemate.game.api.script.framework.tree.LeafTask;
-import java.util.List;
 
 public class Run extends LeafTask {
 

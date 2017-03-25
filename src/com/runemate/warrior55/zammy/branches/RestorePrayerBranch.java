@@ -9,13 +9,14 @@ import com.runemate.warrior55.zammy.main.ZammyWineGrabber;
 
 public class RestorePrayerBranch extends BranchTask {
     
-    private final PlayerNearAltarBranch playerNearAltarBranch = new PlayerNearAltarBranch();
+    private final PlayerNearAltarBranch playerNearAltarBranch;
     private final PlayerInSpotBranch playerInSpotBranch;
     private final ZammyWineGrabber bot;
     
     public RestorePrayerBranch(ZammyWineGrabber zwg) {
         bot = zwg;
         playerInSpotBranch = new PlayerInSpotBranch(bot);
+        playerNearAltarBranch = new PlayerNearAltarBranch(bot);
     }
     
     @Override
