@@ -7,13 +7,13 @@ import com.runemate.game.api.script.framework.tree.TreeTask;
 import com.runemate.warrior55.zammy.leafs.HopWorld;
 import com.runemate.warrior55.zammy.main.ZammyWineGrabber;
 
-public class FailedPicksBranch extends BranchTask {
+public class HopWorldBranch extends BranchTask {
 
     private final ZammyWineGrabber bot;
     private final HopWorld hopWorld;
     private final GameBranch gameBranch;
 
-    public FailedPicksBranch(ZammyWineGrabber zwg) {
+    public HopWorldBranch(ZammyWineGrabber zwg) {
         bot = zwg;
         hopWorld = new HopWorld(bot);
         gameBranch = new GameBranch(bot);
@@ -31,6 +31,7 @@ public class FailedPicksBranch extends BranchTask {
 
     @Override
     public boolean validate() {
-        return bot.getFailedPicks() >= bot.getHopAfterFails() && Npcs.newQuery().targeting(bot.getPlayer()).results().isEmpty();
+        bot.setIsInCombat(!Npcs.newQuery().targeting(bot.getPlayer()).results().isEmpty());
+        return bot.getFailedPicks() >= bot.getHopAfterFails() && !bot.isInCombat();
     }
 }

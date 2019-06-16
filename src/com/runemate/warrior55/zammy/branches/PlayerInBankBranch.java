@@ -11,11 +11,12 @@ public class PlayerInBankBranch extends BranchTask {
     private final ZammyWineGrabber bot;
     private final Coordinate bankCoord = new Coordinate(2947, 3368);
     private final BankOpenBranch bankOpenBranch;
-    private final Run runToBank = new Run(bankCoord, false);
+    private final Run runToBank;
 
     public PlayerInBankBranch(ZammyWineGrabber zwg) {
         bot = zwg;
         bankOpenBranch = new BankOpenBranch(bot);
+        runToBank = new Run(bankCoord, false, bot);
     }
 
     @Override

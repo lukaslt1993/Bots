@@ -2,6 +2,7 @@
 package com.runemate.warrior55.zammy.branches;
 
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
+import com.runemate.game.api.hybrid.local.hud.interfaces.SpriteItem;
 import com.runemate.game.api.script.framework.tree.BranchTask;
 import com.runemate.game.api.script.framework.tree.TreeTask;
 import com.runemate.warrior55.zammy.leafs.Eat;
@@ -10,8 +11,9 @@ import com.runemate.warrior55.zammy.main.ZammyWineGrabber;
 public class InventoryContainsFoodBranch extends BranchTask {
     
     private final ZammyWineGrabber bot;
-    private final Eat eat = new Eat();
+    private Eat eat;
     private final PlayerInBankBranch playerInBankBranch;
+    private SpriteItem food;
     
     public InventoryContainsFoodBranch(ZammyWineGrabber zwg) {
         bot = zwg;
@@ -20,6 +22,7 @@ public class InventoryContainsFoodBranch extends BranchTask {
     
     @Override
     public TreeTask successTask() {
+        eat = new Eat(food);
         return eat;
     }
 
@@ -30,6 +33,6 @@ public class InventoryContainsFoodBranch extends BranchTask {
 
     @Override
     public boolean validate() {
-        return Inventory.newQuery().actions("Eat").results().first() != null;
+        return (food = Inventory.newQuery().actions("Eat").results().random()) != null;
     }
 }

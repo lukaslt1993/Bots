@@ -26,7 +26,8 @@ public class ClickTelegrabAndHoverMouse extends LeafTask {
             if (slot != null) {
                 slot.activate();
             } else {
-                throw new IllegalStateException("No telekinetic grab in action bar");
+                
+                //throw new IllegalStateException("No telekinetic grab in action bar");
             }
         }
         InteractablePoint oldp = bot.getOldWinePoint();

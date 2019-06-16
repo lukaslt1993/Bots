@@ -4,7 +4,6 @@ import com.runemate.game.api.client.embeddable.EmbeddableUI;
 import com.runemate.game.api.hybrid.Environment;
 import com.runemate.game.api.hybrid.entities.Player;
 import com.runemate.game.api.hybrid.local.hud.InteractablePoint;
-import com.runemate.game.api.hybrid.local.hud.interfaces.Bank;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Equipment;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.hybrid.location.Coordinate;
@@ -13,15 +12,17 @@ import com.runemate.game.api.script.framework.tree.TreeBot;
 import com.runemate.game.api.script.framework.tree.TreeTask;
 import com.runemate.warrior55.zammy.branches.RootBranch;
 import com.runemate.warrior55.zammy.gui.Controller;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 
 public class ZammyWineGrabber extends TreeBot implements EmbeddableUI {
 
     private int failedPicks, preset, eatAt, prayAt, hopAfterFails;
-    private boolean isMember;
+    private boolean isMember, isInCombat;
     private String wineName;
     private Coordinate spotCoord, wineCoord, safeSpotCoord, furtherSafeSpotCoord, safeSpotHalfwayCoord;
     private ObjectProperty<Node> botInterfaceProperty;
@@ -153,7 +154,15 @@ public class ZammyWineGrabber extends TreeBot implements EmbeddableUI {
         this.newWinePoint = newWinePoint;
     }
     
-    public boolean checkInventory(boolean isBankOpen) {
+    public boolean isInCombat() {
+        return isInCombat;
+    }
+
+    public void setIsInCombat(boolean isInCombat) {
+        this.isInCombat = isInCombat;
+    }
+
+    /*public boolean checkInventory(boolean isBankOpen) {
         if (isBankOpen) {
             return (Inventory.contains("Law rune") || Bank.contains("Law rune"))
                     && (Equipment.containsAnyOf("Staff of air", "Air battlestaff", "Mystic air staff")
@@ -163,6 +172,11 @@ public class ZammyWineGrabber extends TreeBot implements EmbeddableUI {
                     && (Equipment.containsAnyOf("Staff of air", "Air battlestaff", "Mystic air staff")
                     || Inventory.contains("Air rune"));
         }
+    }*/
+    public boolean isEnoughRunes() {
+        return Inventory.contains("Law rune")
+                && (Equipment.containsAnyOf("Staff of air", "Air battlestaff", "Mystic air staff")
+                || Inventory.contains("Air rune"));
     }
 
     @Override
@@ -211,16 +225,25 @@ public class ZammyWineGrabber extends TreeBot implements EmbeddableUI {
         }
         return botInterfaceProperty;
     }
+    
+    public void showAlertAndStop(String msg) {
+        Platform.runLater(() ->
+        {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText(msg);
+            alert.showAndWait();
+        });
+        stop();
+    }
 
     public void stopMouseRenderer() {
         /*if (mouseRenderer != null) {
             mouseRenderer.getThread().interrupt();
         }*/
     }
-    
+
     /*@Override
     public void onStop() {
         mouseRenderer.close();
     }*/
-
 }

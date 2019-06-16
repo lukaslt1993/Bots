@@ -15,8 +15,8 @@ public class PlayerInSafeSpotBranch extends BranchTask {
     
     public PlayerInSafeSpotBranch(ZammyWineGrabber zwg) {
         bot = zwg;
-        runToSafeSpot = new Run(new Coordinate[] {bot.getSafeSpotHalfwayCoord(), bot.getSafeSpotCoord()});
-        runFurther = new Run(bot.getFurtherSafeSpotCoord(), false);
+        runToSafeSpot = new Run(new Coordinate[] {bot.getSafeSpotHalfwayCoord(), bot.getSafeSpotCoord()}, bot);
+        runFurther = new Run(bot.getFurtherSafeSpotCoord(), false, bot);
     }
     
     @Override

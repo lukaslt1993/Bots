@@ -11,12 +11,13 @@ import com.runemate.warrior55.zammy.main.ZammyWineGrabber;
 public class PlayerNearAltarBranch extends BranchTask {
     
     private final Coordinate altarCoord = new Coordinate (2948, 3475);
-    private final Run runToAltar = new Run(altarCoord, false);
+    private final Run runToAltar;
     private final ClickAltar clickAltar = new ClickAltar();
     private final ZammyWineGrabber bot;
     
     public PlayerNearAltarBranch(ZammyWineGrabber zwg) {
         bot = zwg;
+        runToAltar = new Run(altarCoord, false, bot);
     }
     
     @Override

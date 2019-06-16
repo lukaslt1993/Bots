@@ -16,11 +16,9 @@ public class LoadPreset extends LeafTask {
     @Override
     public void execute() {
 
-        if (!bot.checkInventory(true)) {
-            bot.stop();
-        } else if (Bank.loadPreset(bot.getPreset())) {
-            if (!Execution.delayUntil(() -> bot.checkInventory(false), 5000)) {
-                bot.stop();
+        if (Bank.loadPreset(bot.getPreset())) {
+            if (!Execution.delayUntil(() -> bot.isEnoughRunes(), 5000)) {
+                bot.showAlertAndStop("Bank or preset does not contain needed runes.");
             }
         }
 

@@ -29,9 +29,9 @@ public class PlayerInSpotBranch extends BranchTask {
     @Override
     public TreeTask failureTask() {
         if (player.distanceTo(bot.getSafeSpotCoord()) > 4) {
-            runToSpot = new Run(bot.getSpotCoord(), false);
+            runToSpot = new Run(bot.getSpotCoord(), false, bot);
         } else {
-            runToSpot = new Run(new Coordinate[] {bot.getSafeSpotHalfwayCoord(), bot.getSpotCoord()});
+            runToSpot = new Run(new Coordinate[] {bot.getSafeSpotHalfwayCoord(), bot.getSpotCoord()}, bot);
         }
         return runToSpot;
     }
