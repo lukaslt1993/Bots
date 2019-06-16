@@ -1,7 +1,6 @@
 
 package com.runemate.warrior55.zammy.branches;
 
-import com.runemate.game.api.hybrid.region.Npcs;
 import com.runemate.game.api.rs3.local.hud.Powers;
 import com.runemate.game.api.rs3.local.hud.interfaces.eoc.ActionBar;
 import com.runemate.game.api.script.Execution;
@@ -12,12 +11,12 @@ import com.runemate.warrior55.zammy.main.ZammyWineGrabber;
 public class InCombatBranch extends BranchTask {
     
     private final ZammyWineGrabber bot;
-    private final RS3StuffCheckBranch rs3StuffCheckBranch;
+    private final RS3CheckRunesBranch rs3CheckRunesBranch;
     private final PrayerBranch prayerBranch;
     
     public InCombatBranch(ZammyWineGrabber zwg) {
         bot = zwg;
-        rs3StuffCheckBranch = new RS3StuffCheckBranch(bot); 
+        rs3CheckRunesBranch = new RS3CheckRunesBranch(bot); 
         prayerBranch = new PrayerBranch(bot);
     }
     
@@ -41,11 +40,11 @@ public class InCombatBranch extends BranchTask {
                 throw new IllegalStateException("No protect from magic prayer in action bar");
             }
         }
-        return rs3StuffCheckBranch;
+        return rs3CheckRunesBranch;
     }
 
     @Override
     public boolean validate() {
-        return !Npcs.newQuery().targeting(bot.getPlayer()).results().isEmpty();
+        return bot.isInCombat();
     }
 }

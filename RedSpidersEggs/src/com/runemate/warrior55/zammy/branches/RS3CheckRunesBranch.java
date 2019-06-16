@@ -6,13 +6,13 @@ import com.runemate.game.api.script.framework.tree.BranchTask;
 import com.runemate.game.api.script.framework.tree.TreeTask;
 import com.runemate.warrior55.zammy.main.ZammyWineGrabber;
 
-public class RS3StuffCheckBranch extends BranchTask {
+public class RS3CheckRunesBranch extends BranchTask {
     
     private final ZammyWineGrabber bot;
     private final PlayerInBankBranch playerInBankBranch;
     private final EnoughHealthBranch enoughHealthBranch;
     
-    public RS3StuffCheckBranch(ZammyWineGrabber zwg) {
+    public RS3CheckRunesBranch(ZammyWineGrabber zwg) {
         bot = zwg;
         enoughHealthBranch = new EnoughHealthBranch(bot);
         playerInBankBranch = new PlayerInBankBranch(bot);
@@ -30,6 +30,6 @@ public class RS3StuffCheckBranch extends BranchTask {
 
     @Override
     public boolean validate() {
-        return bot.checkInventory(false) && !(bot.getPlayer().distanceTo(bot.getSpotCoord()) >= 35 && Inventory.newQuery().names(bot.getWineName()).results().size() > 0);
+        return bot.isEnoughRunes() && !(bot.getPlayer().distanceTo(bot.getSpotCoord()) >= 35 && Inventory.newQuery().names(bot.getWineName()).results().size() > 0);
     }
 }
