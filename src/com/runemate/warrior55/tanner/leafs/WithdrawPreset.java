@@ -11,7 +11,7 @@ public class WithdrawPreset extends LeafTask {
 
     @Override
     public void execute() {
-        // add money check
+        // TODO: add money check
         Bank.loadPreset(1, true);
         Execution.delayUntil(() -> !Bank.isOpen(), 2500);
         

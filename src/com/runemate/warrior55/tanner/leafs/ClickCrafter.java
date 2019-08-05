@@ -32,16 +32,6 @@ public class ClickCrafter extends LeafTask {
     @Override
     public void execute() {
         if (noCrafterCounter > 5 || failedClickStreak > 12) {
-            /*PortableCrafter bot = (PortableCrafter) Environment.getBot();
-
-            if (bot != null) {
-                System.out.println("A");
-                bot.stop();
-
-            } else {
-                System.out.println("B");
-                return;
-            }*/
             Environment.getBot().stop();
         }
 
@@ -90,15 +80,8 @@ public class ClickCrafter extends LeafTask {
             int index = line.indexOf("Notes:");
             if (index >= 0) {
                 
-                /*while (!line.contains(">")) {
-                    line += reader.readLine();
-                }*/
-                
                 line = reader.readLine();
                 
-                /*Pattern p = Pattern.compile("\\d+");
-                line = line.substring(index);
-                line = line.split(",")[1];*/
                 Pattern p = Pattern.compile(",\\S.*?,\\S");
                 Matcher m = p.matcher(line);
                 m.find();
@@ -130,26 +113,12 @@ public class ClickCrafter extends LeafTask {
     }
 
     private void hopWorld() {
-        //System.out.println(worldNumber);
-        
         if (worldNumber != 0 && Worlds.getCurrent() != worldNumber) {
             Execution.delayUntil(() -> WorldHop.hopTo(worldNumber), 30000);
 
             if (Execution.delayUntil(() -> Worlds.getCurrent() == worldNumber, 30000)) {
                 Execution.delayUntil(() -> Camera.turnTo(Random.nextInt(88, 97), Random.nextDouble(0.566, 0.568)), 10000);
                 
-                /*for (int i = 0; i < 10; i++) {
-                    Camera.turnTo(Random.nextInt(88, 97), Random.nextDouble(0.566, 0.568));
-                    double pitch = Camera.getPitch();
-                    int yaw = Camera.getYaw();
-
-                    if (!(pitch <= 0.566 || yaw < 88 || yaw > 96)) {
-                        break;
-                    }
-
-                    Execution.delay(2000);
-                }*/
-
                 failedClickCounter = 0;
             }
         }
