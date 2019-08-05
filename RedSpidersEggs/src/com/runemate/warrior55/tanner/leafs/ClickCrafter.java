@@ -90,21 +90,36 @@ public class ClickCrafter extends LeafTask {
             int index = line.indexOf("Notes:");
             if (index >= 0) {
                 
-                while (!line.contains(">")) {
+                /*while (!line.contains(">")) {
                     line += reader.readLine();
-                }
+                }*/
                 
-                Pattern p = Pattern.compile("\\d+");
+                line = reader.readLine();
+                
+                /*Pattern p = Pattern.compile("\\d+");
                 line = line.substring(index);
-                line = line.split(",")[1];
+                line = line.split(",")[1];*/
+                Pattern p = Pattern.compile(",\\S.*?,\\S");
                 Matcher m = p.matcher(line);
+                m.find();
+                line = m.group();
+                line = line.substring(0, line.length() - 1);
+                p = Pattern.compile("\\d+");
+                m = p.matcher(line);
 
                 while (m.find()) {
-                    QUEUE.add(Integer.parseInt(m.group()));
+                    int i = Integer.parseInt(m.group());
+                    if (!QUEUE.contains(i)) {
+                        QUEUE.add(i);
+                    }
                 }
 
                 if (!QUEUE.isEmpty()) {
                     worldNumber = QUEUE.remove();
+                    if (Worlds.getOverview(worldNumber).isMembersOnly()
+                            && !((PortableCrafter)Environment.getBot()).isMember()) {
+                        worldNumber = 0;
+                    }
                 }
 
                 break;
