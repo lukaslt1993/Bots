@@ -6,7 +6,7 @@ import com.runemate.game.api.script.framework.tree.BranchTask;
 import com.runemate.game.api.script.framework.tree.TreeTask;
 import com.runemate.warrior55.tanner.leafs.ClickCrafter;
 
-public class ClickHideBranch extends BranchTask{
+public class HideClickedBranch extends BranchTask{
     
     private final MakeXInterfaceBranch INTERFACE_BRANCH = new MakeXInterfaceBranch();
     private final ClickCrafter CLICK_CRAFTER_LEAF = new ClickCrafter();

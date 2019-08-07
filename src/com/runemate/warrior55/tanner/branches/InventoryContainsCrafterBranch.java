@@ -4,25 +4,26 @@ package com.runemate.warrior55.tanner.branches;
 import com.runemate.game.api.hybrid.local.hud.interfaces.Inventory;
 import com.runemate.game.api.script.framework.tree.BranchTask;
 import com.runemate.game.api.script.framework.tree.TreeTask;
-import com.runemate.warrior55.tanner.common.Constants;
+import com.runemate.warrior55.tanner.leafs.DeployCrafter;
 
-public class RootBranch extends BranchTask {
-    
+public class InventoryContainsCrafterBranch extends BranchTask {
+
+    private final DeployCrafter DEPLOY_CRAFTER_LEAF = new DeployCrafter();
     private final BankBranch BANK_BRANCH = new BankBranch();
-    private final CrafterVisibleBranch CRAFTER_VISIBLE_BRANCH = new CrafterVisibleBranch();
 
     @Override
     public TreeTask successTask() {
-        return BANK_BRANCH;
+        return DEPLOY_CRAFTER_LEAF;
     }
 
     @Override
     public TreeTask failureTask() {
-        return CRAFTER_VISIBLE_BRANCH;
+        return BANK_BRANCH;
     }
 
     @Override
     public boolean validate() {
-        return Inventory.isEmpty() || !Inventory.contains(Constants.PATTERN);
+        return Inventory.contains("Portable crafter");
     }
+
 }
