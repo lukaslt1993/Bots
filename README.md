@@ -1,2 +1,2 @@
 # Description
-Runescape online game bots that play game instead of human
+Runescape online game bots that play instead of human
